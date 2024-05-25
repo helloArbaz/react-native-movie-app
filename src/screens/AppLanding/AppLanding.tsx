@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { SafeAreaView, SafeAreaViewBase, Text, Touchable, TouchableOpacity, View } from 'react-native';
+import { FlatList, SafeAreaView, SafeAreaViewBase, ScrollView, Text, Touchable, TouchableOpacity, View } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
-
-
+import { AppDispatch, RootState } from '../../store';
+import { API } from '../../services';
+import { connect } from 'react-redux';
+import { getMoviesList } from '../../services/getMovieList';
+import Header from '../../components/Header/Header';
+import AppLandingStyle from "./AppLandingStyle"
 
 interface PropsAppLanding {
-    navigation?: NavigationProp<any>
+    navigation?: NavigationProp<any>;
+    getMoviesList?: any
 }
 interface StateAppLanding { }
 
@@ -17,18 +22,27 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
         this.state = {}
     }
 
-    navigate = () => {
+    navigate = async () => {
+        console.log("sdfdsf")
+        let response = await this.props.getMoviesList()
+        console.log(response, '-----')
         this.props.navigation?.navigate("movie-details")
     }
 
 
     render() {
         return (
-            <SafeAreaView>
-                <View style={{ marginTop: 50 }}>
-                    <TouchableOpacity onPress={() => this.navigate()}>
-                        <Text>{JSON.stringify(this.props)}</Text>
-                    </TouchableOpacity>
+            <SafeAreaView style={AppLandingStyle.droidSafeArea}>
+                <View style={AppLandingStyle.droidSafeArea}>
+                    <Header />
+                    <FlatList
+                        numColumns={2}
+                        keyExtractor={(item) => JSON.stringify(item)}
+                        data={[["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"],]}
+                        renderItem={(item: any) => <Text>{JSON.stringify(item.item)}</Text>}
+                    />
+
+
                 </View>
             </SafeAreaView>
         );
@@ -36,4 +50,17 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
 }
 
 
-export default AppLanding;
+
+const mapStateToProps = (state: RootState) => ({
+    data: state.counter.data,
+});
+
+const mapDispatchToProps = (dispatch: AppDispatch) => ({
+    getMoviesList: (reqData?: any) => dispatch(getMoviesList(reqData))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppLanding);
+
+
+
+// export default AppLanding;

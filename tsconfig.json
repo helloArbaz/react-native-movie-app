@@ -3,5 +3,9 @@
   "compilerOptions": {
     "strict": true
   },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "App.js"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "App.js"
+  ]
 }
