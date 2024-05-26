@@ -1,18 +1,39 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Image, ScrollView, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
+import { Image, Keyboard, ScrollView, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
 
 import HeaderStyle from "./HeaderStyle"
 import { GET_FILTER_MAPPER } from '../../helpers/getGenreFilter';
 import { movieGenre } from '../../types';
+import SearchBar from '../SearchBar/SearchBar';
+import { Feather, Entypo } from "@expo/vector-icons";
+
+
 
 interface PropsHeader { }
-interface StateHeader { }
+
+interface StateHeader {
+    _showSearchBar: boolean;
+    _searchValue: string
+}
+
+
 class Header extends Component<PropsHeader, StateHeader> {
 
     constructor(props: PropsHeader) {
         super(props)
-        this.state = {}
+        this.state = {
+            _showSearchBar: false,
+            _searchValue: ''
+        }
+    }
+
+    setSearchBarVisibility = () => {
+        this.setState({ _showSearchBar: !this.state._showSearchBar })
+    }
+
+    setSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({ _searchValue: event.target.value })
     }
 
     getGenreFilter = (): any[] => {
@@ -25,11 +46,28 @@ class Header extends Component<PropsHeader, StateHeader> {
 
 
     render() {
+        const { _showSearchBar } = this.state;
         return (
             <View style={HeaderStyle.headerWrapper}>
                 <View style={HeaderStyle.logoWrapper}>
-                    <Image style={{ height: 35, width: 124 }} source={require('../Header/logo.png')} />
-                    <Text>Search</Text>
+                    {
+                        !_showSearchBar && <Image style={{ height: 35, width: 124 }} source={require('../Header/logo.png')} />
+                    }
+                    {
+                        !_showSearchBar &&
+                        <TouchableOpacity activeOpacity={1}>
+                            <Feather
+                                onPress={() => this.setSearchBarVisibility()}
+                                name="search"
+                                size={25}
+                                color="#F0283C"
+                                style={{ marginRight: 10 }}
+                            />
+                        </TouchableOpacity>
+                    }
+
+                    {_showSearchBar && <SearchBar setSearchBarVisibility={this.setSearchBarVisibility} />}
+
                 </View>
                 <View style={HeaderStyle.filterWrapper}>
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>

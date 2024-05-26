@@ -1,22 +1,85 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Button, TextInput, View } from 'react-native';
+
+import { Feather, Entypo } from "@expo/vector-icons";
+import SearchBarStyle from './SearchBarStyle';
 
 
-interface PropsSearchBar { }
-interface StateSearchBar { }
+interface PropsSearchBar {
+    setSearchBarVisibility: any
+}
+interface StateSearchBar {
+    _searchValue: string
+}
 
 class SearchBar extends Component<PropsSearchBar, StateSearchBar> {
     constructor(props: PropsSearchBar) {
         super(props);
-        this.state = {}
+        this.state = {
+            _searchValue: ''
+        }
     }
 
 
-    render() {
-        return (
-            <div>
+    setSearchValue = (event: any) => {
+        const { eventCount, target, text } = event.nativeEvent;
+        this.setState({ _searchValue: text });
+    }
 
-            </div>
+    searchBarCrossClick = () => {
+        const { _searchValue} = this.state
+        const {setSearchBarVisibility} = this.props
+        if( _searchValue){
+            this.setState({ _searchValue: '' });
+            return
+        }
+        setSearchBarVisibility()
+
+    }
+
+
+
+    render() {
+        const { setSearchBarVisibility } = this.props
+        const { _searchValue } = this.state;
+        return (
+            <View style={SearchBarStyle.container}>
+                <View
+                    style={
+                        true
+                            ? SearchBarStyle.searchBar__clicked
+                            : SearchBarStyle.searchBar__unclicked
+                    }
+                >
+                    {/* search Icon */}
+                    <Feather
+                        name="search"
+                        size={20}
+                        color="black"
+                        style={{ marginLeft: 1 }}
+                    />
+                    {/* Input field */}
+                    <TextInput
+                        style={SearchBarStyle.input}
+                        placeholder="Search"
+                        value={_searchValue}
+                        onChangeText={newText => this.setState({ _searchValue: newText })}
+                    // onChangeText={(event:any)=>this.setSearchValue(event)}
+                    // onFocus={() => {
+                    //     setClicked(true);
+                    // }}
+                    />
+                    {/* cross Icon, depending on whether the search bar is clicked or not */}
+                    {true && (
+                        <Entypo name="cross" size={20} color="black" style={{ padding: 1 }} onPress={() => {
+                            this.searchBarCrossClick()
+                            // setSearchPhrase("")
+
+                        }} />
+                    )}
+                </View>
+            </View>
         );
     }
 }
