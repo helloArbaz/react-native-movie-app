@@ -13,10 +13,12 @@ import Loading from '../../components/Loading/Loading';
 import { data_data, sort_release_date } from '../../data/data';
 import { _dd, convertDataToSelectionListView, res, sortData } from '../../data/newData';
 import { movieGenre, movieListData } from '../../types';
+import { loadMore } from '../../services/loadMore';
 
 interface PropsAppLanding {
     navigation?: NavigationProp<any>;
     getMoviesList?: any,
+    loadMore?: any,
     data?: any,
     rawData?: any
     loader?: boolean
@@ -39,11 +41,21 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
     }
 
     getImages = async () => {
-        let response = await this.props.getMoviesList()
+        await this.props.getMoviesList()
+    }
+
+    onViewableItemsChanged = (event?: any) => {
+        console.log(JSON.stringify(event.changed[0].isViewable))
+
+    }
+
+    loadMore = async () => {
+        await this.props.loadMore()
     }
 
     render() {
         const { data, loader } = this.props
+        console.log(JSON.stringify(this.props.data),)
         return (
             <SafeAreaView style={AppLandingStyle.droidSafeArea}>
                 {loader && <Loading />}
@@ -51,7 +63,7 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
                     <Header />
                     {/* <Text style={{color:"white"}}>{JSON.stringify(this.props.data)}</Text> */}
                     <SectionList
-                        sections={[...this.props.data]}
+                        sections={this.props.data}
                         keyExtractor={(item, index) => item + index}
                         renderItem={({ item, index }) => (
                             <View>
@@ -63,6 +75,12 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
                                             data={this.props.data[index].data}
                                             keyExtractor={(item) => JSON.stringify(item)}
                                             removeClippedSubviews
+                                            onViewableItemsChanged={this.onViewableItemsChanged}
+                                            viewabilityConfig={{
+                                                viewAreaCoveragePercentThreshold: 95
+                                            }}
+                                            onEndReachedThreshold={2}
+                                            onEndReached={() => this.loadMore()}
                                         />
                                     </View>
                                 }
@@ -93,7 +111,8 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
-    getMoviesList: (reqData?: any) => dispatch(getMoviesList(reqData))
+    getMoviesList: (reqData?: any) => dispatch(getMoviesList(reqData)),
+    loadMore: (reqData?: any) => dispatch(loadMore(reqData))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppLanding);

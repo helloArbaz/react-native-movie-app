@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Dimensions, Image, Text, View } from 'react-native';
 import MovieCardStyle from "./MovieCardStyle"
@@ -11,21 +11,24 @@ import { genreFilterById, genreNameOnly } from '../../helpers/getGenreFilter';
 
 
 
+
 interface PropsMovieCard {
     movieData: movieListData
 }
 interface StateMovieCard {
     width: any;
-    height: any
+    height: any;
+    renderImage:boolean
 }
 
 
-class MovieCard extends Component<PropsMovieCard, StateMovieCard> {
+class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
     constructor(props: PropsMovieCard) {
         super(props);
         this.state = {
             height: '',
-            width: ''
+            width: '',
+            renderImage:false
         }
     }
 

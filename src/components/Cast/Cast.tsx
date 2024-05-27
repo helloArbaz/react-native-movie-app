@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Image, View } from 'react-native';
 import { API_URL } from '../../configs/api.config';
@@ -7,7 +7,7 @@ import { API_URL } from '../../configs/api.config';
 interface PropsCast { }
 interface StateCast { }
 
-class Cast extends Component<PropsCast, StateCast> {
+class Cast extends PureComponent<PropsCast, StateCast> {
 
     cast = {
         "adult": false,

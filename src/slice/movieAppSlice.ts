@@ -5,6 +5,7 @@ import { movieGenre } from '../types';
 import { GET_FILTER_MAPPER } from '../helpers/getGenreFilter';
 import { convertDataToSelectionListView, sortData } from '../data/newData';
 import { sortByGenreFilter } from '../helpers/sortByGenreFilter';
+import { loadMore } from '../services/loadMore';
 
 interface MovieAppState {
     data?: any[]
@@ -47,6 +48,22 @@ const movieAppSlice = createSlice({
             state.loader = false
             state.data = final
             state.rawData = action?.payload?.results
+        });
+        builder.addCase(loadMore.fulfilled, (state: MovieAppState, action: PayloadAction<any>) => {
+            let sortedDs = sortData(action?.payload?.results)
+            console.log(sortedDs,"sortedDssortedDs")
+            let final = convertDataToSelectionListView(sortedDs)
+            
+            let _clone:any[] =[...state.data!];
+            _clone.push(...final)
+
+            state.data = _clone
+
+            console.log(JSON.stringify(state.data),"state.datastate.datastate.data")
+
+
+
+            // state.rawData = action?.payload?.results
         });
     }
 });

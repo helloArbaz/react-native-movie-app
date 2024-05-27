@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Button, TextInput, View } from 'react-native';
 
@@ -13,7 +13,7 @@ interface StateSearchBar {
     _searchValue: string
 }
 
-class SearchBar extends Component<PropsSearchBar, StateSearchBar> {
+class SearchBar extends PureComponent<PropsSearchBar, StateSearchBar> {
     constructor(props: PropsSearchBar) {
         super(props);
         this.state = {

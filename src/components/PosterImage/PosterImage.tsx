@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Dimensions, Image, Text, View } from 'react-native';
 
@@ -10,7 +10,7 @@ interface StatePosterImage {
 }
 
 
-class PosterImage extends Component<PropsPosterImage, StatePosterImage> {
+class PosterImage extends PureComponent<PropsPosterImage, StatePosterImage> {
     constructor(props: PropsPosterImage) {
         super(props);
         this.state = {

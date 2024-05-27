@@ -1,3 +1,4 @@
+import store from "../store";
 
 const DATA = [
     {
@@ -414,11 +415,11 @@ export let _dd = [
 
 
 export const convertDataToSelectionListView = (data: any[]) => {
-    let _finalResult:any = []
-    Object.keys(data).map((va:any,i)=>{
+    let _finalResult: any = []
+    Object.keys(data).map((va: any, i) => {
         _finalResult.push({
-            title:va,
-            data:data[va]
+            title: va,
+            data: data[va]
         })
     })
     return _finalResult
@@ -442,8 +443,7 @@ export const sortData = (data: any) => {
             }
         }
     }
-
     return _mySet
 }
 
-export const res:any = convertDataToSelectionListView(sortData(_dd))
+export const res: any = convertDataToSelectionListView(sortData(_dd))
