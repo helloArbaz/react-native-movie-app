@@ -21,7 +21,7 @@ class PosterImage extends Component<PropsPosterImage, StatePosterImage> {
     }
 
     loadImage = () => {
-        Image.getSize("https://image.tmdb.org/t/p/w500/4XM8DUTQb3lhLemJC51Jx4a2EuA.jpg", (srcWidth, srcHeight) => {
+        Image.getSize("https://image.tmdb.org/t/p/w500/hU1Q9YVzdYhokr8a9gLywnSUMlN.jpg", (srcWidth, srcHeight) => {
             const maxHeight = Dimensions.get('window').height; 
             const maxWidth = Dimensions.get('window').width;
             const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
@@ -38,12 +38,13 @@ class PosterImage extends Component<PropsPosterImage, StatePosterImage> {
                 {/* <Text>{JSON.stringify(this.state)}</Text> */}
                 <Image 
                  style={{
-                    width:undefined,
+                    width:width-40,
                     height,
                     overflow: "hidden",
+                    borderRadius:5
                 }}
                 resizeMode='cover'
-                source={{ uri: "https://image.tmdb.org/t/p/w500/4XM8DUTQb3lhLemJC51Jx4a2EuA.jpg" }} />
+                source={{ uri: "https://image.tmdb.org/t/p/w500/hU1Q9YVzdYhokr8a9gLywnSUMlN.jpg" }} />
             </View>
         );
     }
