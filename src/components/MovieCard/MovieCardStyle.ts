@@ -2,7 +2,7 @@ import { StyleSheet, Platform } from 'react-native';
 export default StyleSheet.create({
     wrapper: {
         width: 187,
-        // height: 275, //222+8 
+        height: 350, //222+8 
         backgroundColor: 'black',
         margin: 6,
         borderRadius: 4,
@@ -33,17 +33,19 @@ export default StyleSheet.create({
         position: "absolute",
         bottom: 0,
         backgroundColor: 'rgba(17, 17, 17, 0.684)',
-        justifyContent: "center",
+        justifyContent: "flex-start",
         display: "flex",
         // alignItems: 'center',
-        height: '15%',
+        height: '25%',
         width: "100%",
-        textAlign: "center",
-        paddingLeft: 5,
-        paddingRight: 5,
+        textAlign: "left",
+        // paddingLeft: 5,
+        // paddingRight: 5,
         flexDirection: "column",
         // borderTopRightRadius:5,
         // borderTopLeftRadius:5
+        padding: 10,
+        alignItems:"center"
     },
     genreText: {
         color: "white",
@@ -72,10 +74,10 @@ export default StyleSheet.create({
     ratingStart: {
         color: '#fcbd28',
         marginRight: 2,
-        fontSize:10
+        fontSize: 10
     },
-    movieInfo:{
-        padding:10
+    movieInfo: {
+        padding: 10
     }
 });
 

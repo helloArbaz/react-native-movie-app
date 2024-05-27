@@ -1,7 +1,6 @@
 
 
 export const formatViewCountNumber = (number: number): any => {
-  console.log("Sdfsd")
   if (number < 1000) {
     return number;
   } else if (number >= 1000 && number < 1_000_000) {
@@ -15,4 +14,3 @@ export const formatViewCountNumber = (number: number): any => {
   }
 }
 
-console.log(formatViewCountNumber(1555))

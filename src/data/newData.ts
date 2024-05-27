@@ -414,21 +414,17 @@ export let _dd = [
 
 
 export const convertDataToSelectionListView = (data: any[]) => {
-    console.log(data)
     let _finalResult:any = []
     Object.keys(data).map((va:any,i)=>{
-        console.log(va)
         _finalResult.push({
             title:va,
             data:data[va]
         })
     })
-
     return _finalResult
-    console.log(JSON.stringify(_finalResult))
 }
 
-export const sortData = (data: any[]) => {
+export const sortData = (data: any) => {
     let response = { result: [] }
     let _mySet: any = {}
     for (let index = 0; index < data.length; index++) {
@@ -442,7 +438,6 @@ export const sortData = (data: any[]) => {
             }
             else {
                 _mySet[_yearCast] = []
-                _mySet[_yearCast].push({ year: 2012 })
                 _mySet[_yearCast].push(element)
             }
         }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Image, Keyboard, ScrollView, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
 
@@ -7,10 +7,16 @@ import { GET_FILTER_MAPPER } from '../../helpers/getGenreFilter';
 import { movieGenre } from '../../types';
 import SearchBar from '../SearchBar/SearchBar';
 import { Feather, Entypo } from "@expo/vector-icons";
+import { connect } from 'react-redux';
+import { AppDispatch, RootState } from '../../store';
+import { changeFilter } from '../../slice/movieAppSlice';
 
 
 
-interface PropsHeader { }
+interface PropsHeader {
+    selectedFilter?: movieGenre
+    changeFilter: (data: movieGenre) => {}
+}
 
 interface StateHeader {
     _showSearchBar: boolean;
@@ -18,7 +24,7 @@ interface StateHeader {
 }
 
 
-class Header extends Component<PropsHeader, StateHeader> {
+class Header extends PureComponent<PropsHeader, StateHeader> {
 
     constructor(props: PropsHeader) {
         super(props)
@@ -38,15 +44,18 @@ class Header extends Component<PropsHeader, StateHeader> {
 
     getGenreFilter = (): any[] => {
         let _result: any = []
-        Object.keys(GET_FILTER_MAPPER).map((val: any, i: number) => {
-            _result.push(GET_FILTER_MAPPER[val].name)
-        })
+        Object.keys(GET_FILTER_MAPPER).map((val: any, i: number) => { _result.push(GET_FILTER_MAPPER[val]) })
         return _result
+    }
+
+    changeFilter = (filterVale: movieGenre) => {
+        this.props.changeFilter(filterVale)
     }
 
 
     render() {
         const { _showSearchBar } = this.state;
+        const { selectedFilter } = this.props
         return (
             <View style={HeaderStyle.headerWrapper}>
                 <View style={HeaderStyle.logoWrapper}>
@@ -72,9 +81,19 @@ class Header extends Component<PropsHeader, StateHeader> {
                 <View style={HeaderStyle.filterWrapper}>
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                         {
-                            [...this.getGenreFilter()].map((val: any, index: number) => {
-                                return <TouchableOpacity style={HeaderStyle.genreFilter}>
-                                    <Text style={{ color: "white" }}>{val}</Text>
+                            [...this.getGenreFilter()].map((val: movieGenre, index: number) => {
+                                return <TouchableOpacity
+                                    onPress={() => this.changeFilter(val)}
+                                    style={[HeaderStyle.genreFilter,
+                                    { backgroundColor: selectedFilter?.id == val.id ? "#F0283C" : "#484848" }
+                                    ]}>
+                                    <Text
+                                        style={{
+                                            color: "white",
+                                            fontSize: 14,
+                                            fontWeight: selectedFilter?.id == val.id ? "600" : "400"
+
+                                        }}>{val.name}</Text>
                                 </TouchableOpacity>
                             })
                         }
@@ -85,4 +104,17 @@ class Header extends Component<PropsHeader, StateHeader> {
     }
 }
 
-export default Header;
+
+const mapStateToProps = (state: RootState) => ({
+    selectedFilter: state.movieApp.selectedFilter,
+});
+
+const mapDispatchToProps = (dispatch: AppDispatch) => ({
+    // getMoviesList: (reqData?: any) => dispatch(getMoviesList(reqData))
+    changeFilter: (data: movieGenre) => dispatch(changeFilter(data))
+});
+
+// export default Header;
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

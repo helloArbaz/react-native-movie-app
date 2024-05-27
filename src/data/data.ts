@@ -468,7 +468,3 @@ export const sort_release_date = (_data: any[]) => {
 
 
 sort_release_date(data_data.results)
-
-
-// console.log(JSON.stringify(sort_release_date(data.results)))
-// sort_release_date(data.results)
