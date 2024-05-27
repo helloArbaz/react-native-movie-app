@@ -22,10 +22,19 @@ export default class extends React.Component {
           <Stack.Navigator>
             <Stack.Screen name="app"
               component={AppLanding}
-              options={{ headerShown: false }}
+              options={
+                {
+                  headerShown: false,
+                  headerTitle:""
+                }
+              }
 
             />
-            <Stack.Screen name="movie-details" component={MovieDetails} />
+            <Stack.Screen name="movie-details" component={MovieDetails}
+              options={{
+                headerBackButtonMenuEnabled: false
+              }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>

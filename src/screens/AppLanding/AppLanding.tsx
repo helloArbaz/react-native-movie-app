@@ -10,6 +10,7 @@ import Header from '../../components/Header/Header';
 import AppLandingStyle from "./AppLandingStyle"
 import MovieCard from '../../components/MovieCard/MovieCard';
 import Loading from '../../components/Loading/Loading';
+import { data_data, sort_release_date } from '../../data/data';
 
 interface PropsAppLanding {
     navigation?: NavigationProp<any>;
@@ -24,12 +25,14 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
         this.state = {}
     }
 
-    navigate = async () => {
+    navigate = async (data?: any) => {
         console.log("sdfdsf")
         let response = await this.props.getMoviesList()
         console.log(response, '-----')
-        this.props.navigation?.navigate("movie-details")
+        this.props.navigation?.navigate("movie-details", { data })
     }
+
+
 
 
     render() {
@@ -40,16 +43,24 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
                     <Header />
                     <FlatList
                         numColumns={2}
-                        key={Math.random()}
                         keyExtractor={(item) => JSON.stringify(item)}
-                        data={[["1"], ["2"], ["1"], ["2"], ["1"], ["2"], ["1"], ["2"]]}
-                        renderItem={(item: any) => (item.index === 2 || item.index === 2 + 1) ? <Text style={{ color: "red" }}>Hacking</Text> : <MovieCard />}
-                        ListHeaderComponent={() => <View><Text style={{ color: "white" }}>Header</Text></View>}
-                        stickyHeaderIndices={[0, 2]}
-
+                        data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0,]}
+                        windowSize={100}
+                        removeClippedSubviews={true}
+                        renderItem={(item: any) => (item.index === 2 || item.index === 2 + 1) ? <View style={{ height: 60, backgroundColor: 'red' }}><Text style={{ color: "green" }}>Date</Text></View> :
+                            <TouchableOpacity onPress={() => this.navigate(item)}>
+                                <View>
+                                    <MovieCard />
+                                </View>
+                            </TouchableOpacity>
+                        }
+                        ListHeaderComponent={() => <Text>gfgdf</Text>}
+                        initialNumToRender={8}
+                        stickyHeaderIndices={[2]}
+                        // onEndReached={()=> alert('hello')}
+                        // onEndReachedThreshold={10}
+                        onEndReachedThreshold={100}
                     />
-
-
                 </View>
             </SafeAreaView>
         );
