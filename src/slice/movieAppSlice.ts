@@ -3,7 +3,7 @@ import { getMoviesList } from '../services/getMovieList';
 import { getGenreFilter } from '../services/getGenreFilter';
 
 interface MovieAppState {
-    data?: [] | {};
+    data?: any[]
     searchResult?: []
     loader?: boolean
 }
