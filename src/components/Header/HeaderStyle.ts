@@ -10,7 +10,7 @@ export default StyleSheet.create({
         alignItems:'center'
     },
     filterWrapper:{
-        paddingTop:15,
+        paddingTop:10,
         paddingBottom:15,
         paddingLeft:10,
         paddingRight:10,

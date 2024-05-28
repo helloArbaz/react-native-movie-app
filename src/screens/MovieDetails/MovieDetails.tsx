@@ -142,7 +142,7 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
                         </View>
 
 
-                        
+
 
 
                         <View style={{ display: "flex", justifyContent: "space-between", flexDirection: "row", padding: 20, borderTopWidth: 0.5, borderTopColor: "white", borderBottomWidth: 0.5, borderBottomColor: "white" }}>
@@ -152,17 +152,18 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
                             </View>
                             <View style={{ display: "flex", gap: 10, width: "33.33%", flexDirection: "column", justifyContent: "center", alignItems: "center", alignContent: "center" }}>
                                 <Entypo name="star" size={25} color="#fcbd28" />
-                                <Text style={{ color: "white", fontSize: 12 }}>{`${Math.ceil(parseInt(String(movieDetail.vote_average)))}/10`}</Text>
+                                <Text style={{ color: "white", fontSize: 12 }}>{`${Math.ceil(parseInt(String(movieDetail.vote_average)))} / 10`}</Text>
                             </View>
                             <View style={{ display: "flex", gap: 10, width: "33.33%", flexDirection: "column", justifyContent: "center", alignItems: "center", alignContent: "center" }}>
                                 <Entypo name="plus" size={25} color="green" />
-                                <Text style={{ color: "white", fontSize: 12 }}>{formatViewCountNumber(movieDetail.popularity)}</Text>
+                                <Text style={{ color: "white", fontSize: 12 }}>{Math.ceil(parseInt(String(movieDetail.popularity)))}</Text>
                             </View>
                         </View>
 
                         <View style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                            <Text style={{ color: "white" }}>{`Languages :`}</Text>
-                            <View style={{ display: "flex", flexDirection: "row", gap: 10, flexWrap: "wrap" }}>
+
+                            <View style={{ display: "flex", flexDirection: "row", gap: 10, flexWrap: "wrap",alignItems:"center" }}>
+                                <Text style={{ color: "white", fontSize: 18, fontWeight: "600" }}>{`Languages :`}</Text>
                                 {
                                     movieDetail.spoken_languages.map((v: spoken_languages, index: number) => {
                                         return <Text style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 5, paddingBottom: 5, color: "white", borderWidth: 0.5, borderColor: 'white', borderRadius: 5, fontSize: 12, fontWeight: "300" }}>{v.english_name}</Text>
@@ -172,19 +173,19 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
                         </View>
 
                         <View style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                            <Text style={{ color: "white" }}>{`Movie Story : [ ${toHoursAndMinutes(movieDetail.runtime)} ]`}</Text>
+                            <Text style={{ color: "white", fontSize: 18, fontWeight: "600" }}>{`Movie Story : [ ${toHoursAndMinutes(movieDetail.runtime)} ]`}</Text>
                             <Text style={{ color: "white", fontSize: 15, fontWeight: "100" }}>{movieDetail.overview}</Text>
                         </View>
-                       
-                       
+
+
                         <View style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-                            <Text style={{ color: "white" }}>{`Cast :`}</Text>
-                            <Cast castList={cast} displayLength={10}/>
+                            <Text style={{ color: "white", fontSize: 18, fontWeight: "600" }}>{`Cast :`}</Text>
+                            <Cast castList={cast} displayLength={10} />
                         </View>
 
 
                         <View style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                            <Text style={{ color: "white" }}>{`Production Houses :`}</Text>
+                            <Text style={{ color: "white", fontSize: 18, fontWeight: "600" }}>{`Production Houses :`}</Text>
                             <View style={{ display: "flex", flexDirection: "row", gap: 10, flexWrap: "wrap" }}>
                                 {
                                     movieDetail.production_companies.map((v: production_companies, index: number) => {
@@ -195,7 +196,7 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
                         </View>
 
 
-                       
+
 
                     </View>
 

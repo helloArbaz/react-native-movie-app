@@ -30,7 +30,7 @@ class Header extends PureComponent<PropsHeader, StateHeader> {
     constructor(props: PropsHeader) {
         super(props)
         this.state = {
-            _showSearchBar: true,
+            _showSearchBar: false,
             _searchValue: ''
         }
     }
