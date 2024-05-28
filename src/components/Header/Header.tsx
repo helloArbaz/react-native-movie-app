@@ -9,13 +9,14 @@ import SearchBar from '../SearchBar/SearchBar';
 import { Feather, Entypo } from "@expo/vector-icons";
 import { connect } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
-import { changeFilter } from '../../slice/movieAppSlice';
+import { changeFilter, searchFilter } from '../../slice/movieAppSlice';
 
 
 
 interface PropsHeader {
     selectedFilter?: movieGenre
     changeFilter: (data: movieGenre) => {}
+    searchFilter: (query: string) => {}
 }
 
 interface StateHeader {
@@ -29,7 +30,7 @@ class Header extends PureComponent<PropsHeader, StateHeader> {
     constructor(props: PropsHeader) {
         super(props)
         this.state = {
-            _showSearchBar: false,
+            _showSearchBar: true,
             _searchValue: ''
         }
     }
@@ -75,7 +76,7 @@ class Header extends PureComponent<PropsHeader, StateHeader> {
                         </TouchableOpacity>
                     }
 
-                    {_showSearchBar && <SearchBar setSearchBarVisibility={this.setSearchBarVisibility} />}
+                    {_showSearchBar && <SearchBar searchFilter={this.props.searchFilter} setSearchBarVisibility={this.setSearchBarVisibility} />}
 
                 </View>
                 <View style={HeaderStyle.filterWrapper}>
@@ -83,6 +84,7 @@ class Header extends PureComponent<PropsHeader, StateHeader> {
                         {
                             [...this.getGenreFilter()].map((val: movieGenre, index: number) => {
                                 return <TouchableOpacity
+                                key={index}
                                     onPress={() => this.changeFilter(val)}
                                     style={[HeaderStyle.genreFilter,
                                     { backgroundColor: selectedFilter?.id == val.id ? "#F0283C" : "#484848" }
@@ -110,8 +112,8 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
-    // getMoviesList: (reqData?: any) => dispatch(getMoviesList(reqData))
-    changeFilter: (data: movieGenre) => dispatch(changeFilter(data))
+    changeFilter: (data: movieGenre) => dispatch(changeFilter(data)),
+    searchFilter: (query:string) => dispatch(searchFilter(query))
 });
 
 // export default Header;

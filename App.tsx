@@ -24,15 +24,26 @@ export default class extends React.Component {
               component={AppLanding}
               options={
                 {
+                  headerBackButtonMenuEnabled: false,
                   headerShown: false,
-                  headerTitle:""
+                  headerTitle: "",
+                   
+                  headerStyle: {
+                    backgroundColor: "black",
+                  }
                 }
               }
 
             />
-            <Stack.Screen name="movie-details" component={MovieDetails}
+            <Stack.Screen name="movie-details" 
+            component={MovieDetails}
               options={{
-                headerBackButtonMenuEnabled: false
+                headerBackButtonMenuEnabled: false,
+                headerTitle: "",
+                headerShown: false,
+                headerStyle: {
+                  backgroundColor: "black",
+                }
               }}
             />
           </Stack.Navigator>

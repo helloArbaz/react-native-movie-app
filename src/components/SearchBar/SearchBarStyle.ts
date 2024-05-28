@@ -23,7 +23,7 @@ export default StyleSheet.create({
       padding: 10,
       flexDirection: "row",
       width: "100%",
-      backgroundColor: "#d9dbda",
+      backgroundColor: "#484848",
       borderRadius: 15,
       alignItems: "center",
       justifyContent: "space-evenly",
@@ -32,5 +32,7 @@ export default StyleSheet.create({
       fontSize: 20,
       marginLeft: 10,
       width: "90%",
+      color:"white",
+      backgroundColor:"#484848"
     },
   });

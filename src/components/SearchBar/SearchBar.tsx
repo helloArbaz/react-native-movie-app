@@ -7,7 +7,8 @@ import SearchBarStyle from './SearchBarStyle';
 
 
 interface PropsSearchBar {
-    setSearchBarVisibility: any
+    setSearchBarVisibility: any,
+    searchFilter: any
 }
 interface StateSearchBar {
     _searchValue: string
@@ -22,19 +23,24 @@ class SearchBar extends PureComponent<PropsSearchBar, StateSearchBar> {
     }
 
 
-    setSearchValue = (event: any) => {
-        const { eventCount, target, text } = event.nativeEvent;
-        this.setState({ _searchValue: text });
+    setSearchValue = (newText: any) => {
+        const { searchFilter } = this.props
+        this.setState({ _searchValue: newText }, () => {
+            searchFilter(this.state._searchValue)
+        });
     }
 
     searchBarCrossClick = () => {
         const { _searchValue} = this.state
+        const { searchFilter } = this.props
+
         const {setSearchBarVisibility} = this.props
         if( _searchValue){
             this.setState({ _searchValue: '' });
             return
         }
         setSearchBarVisibility()
+        searchFilter(null)
 
     }
 
@@ -46,38 +52,27 @@ class SearchBar extends PureComponent<PropsSearchBar, StateSearchBar> {
         return (
             <View style={SearchBarStyle.container}>
                 <View
-                    style={
-                        true
-                            ? SearchBarStyle.searchBar__clicked
-                            : SearchBarStyle.searchBar__unclicked
-                    }
+                    style={[SearchBarStyle.searchBar__unclicked, SearchBarStyle.searchBar__clicked]}
                 >
-                    {/* search Icon */}
                     <Feather
                         name="search"
                         size={20}
-                        color="black"
-                        style={{ marginLeft: 1 }}
+                        color="#FFFFFF"
+                        style={{ marginLeft: 15, marginRight: 10 }}
                     />
-                    {/* Input field */}
                     <TextInput
                         style={SearchBarStyle.input}
+                        placeholderTextColor={"#8c8c8c"}
                         placeholder="Search"
                         value={_searchValue}
-                        onChangeText={newText => this.setState({ _searchValue: newText })}
-                    // onChangeText={(event:any)=>this.setSearchValue(event)}
-                    // onFocus={() => {
-                    //     setClicked(true);
-                    // }}
+                        onChangeText={newText => this.setSearchValue(newText)}
                     />
-                    {/* cross Icon, depending on whether the search bar is clicked or not */}
-                    {true && (
-                        <Entypo name="cross" size={20} color="black" style={{ padding: 1 }} onPress={() => {
+
+                    <Entypo name="cross" size={25} color="#FFFFFF" style={{ padding: 1, marginRight: 15 }} onPress={() => {
                             this.searchBarCrossClick()
                             // setSearchPhrase("")
 
-                        }} />
-                    )}
+                    }} />
                 </View>
             </View>
         );

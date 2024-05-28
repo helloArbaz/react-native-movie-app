@@ -1,39 +1,73 @@
 import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Image, View } from 'react-native';
-import { API_URL } from '../../configs/api.config';
+import { FlatList, Image, Text, View } from 'react-native';
+import { API_URL, MOVIE_URL_DOMAIN } from '../../configs/api.config';
+import { cast } from '../../types';
 
 
-interface PropsCast { }
-interface StateCast { }
+interface PropsCast {
+    castList?: any
+    displayLength?: number,
+}
+
+interface StateCast {
+    sortdisplayCast: cast[]
+}
 
 class Cast extends PureComponent<PropsCast, StateCast> {
-
-    cast = {
-        "adult": false,
-        "gender": 2,
-        "id": 12835,
-        "known_for_department": "Acting",
-        "name": "Vin Diesel",
-        "original_name": "Vin Diesel",
-        "popularity": 77.792,
-        "profile_path": "/nZdVry7lnUkE24PnXakok9okvL4.jpg",
-        "cast_id": 0,
-        "character": "Dominic Toretto",
-        "credit_id": "56d8c1e0c3a3681e3601fdc6",
-        "order": 0
-    }
-
     constructor(props: PropsCast) {
         super(props);
-        this.state = {}
+        this.state = {
+            sortdisplayCast: []
+        }
 
     }
+
+    componentDidMount(): void {
+        let { castList, displayLength } = this.props
+        console.log(castList)
+        let _counter = [];
+        for (let index = 0; index < castList.cast.length; index++) {
+            const element = castList.cast[index];
+            if (_counter.length == displayLength) break;
+            if (element.profile_path) _counter.push(element)
+        }
+
+        console.log(_counter)
+
+        this.setState({ sortdisplayCast: _counter })
+
+    }
+
+    renderItem = (item: any) => {
+        return <Image style={{ height: 150, width: 100, borderRadius: 10, overflow: "hidden" }} source={{ uri: `${MOVIE_URL_DOMAIN}/${item.item.profile_path}` }} />
+    }
+
+
     render() {
+        const { castList, displayLength } = this.props
+        const { sortdisplayCast } = this.state;
+
         return (
             <View>
-                <View style={{height:100,width:100,borderRadius:10,backgroundColor:'red'}}>
-                    <Image source={{ uri: `${API_URL}/${this.cast.profile_path}` }} />
+                <View style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 10, justifyContent: "space-evenly" }}>
+                    {/* {
+                        this.props.castList?.cast?.map((v: cast, index: number) => {
+                            if (this.props?.displayLength! >= index) {
+                                return  <Image style={{ height: 150, width: 100, borderRadius: 10, overflow: "hidden" }} source={{ uri: `${MOVIE_URL_DOMAIN}/${v.profile_path}` }} />
+                            } else { return null }
+                        })
+                    } */}
+
+                    <View style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 10, justifyContent: "space-evenly" }}>
+                        <FlatList
+                            data={sortdisplayCast}
+                            renderItem={this.renderItem}
+                            numColumns={3}
+                            contentContainerStyle={{ gap: 20 }}
+                            columnWrapperStyle={{ gap: 20 }}
+                        />
+                    </View>
                 </View>
             </View>
         );

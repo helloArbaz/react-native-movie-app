@@ -1,9 +1,12 @@
 import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Dimensions, Image, Text, View } from 'react-native';
+import { MOVIE_URL_DOMAIN } from '../../configs/api.config';
 
 
-interface PropsPosterImage { }
+interface PropsPosterImage {
+    url: string
+}
 interface StatePosterImage {
     width: any;
     height: any
@@ -21,7 +24,8 @@ class PosterImage extends PureComponent<PropsPosterImage, StatePosterImage> {
     }
 
     loadImage = () => {
-        Image.getSize("https://image.tmdb.org/t/p/w500/hU1Q9YVzdYhokr8a9gLywnSUMlN.jpg", (srcWidth, srcHeight) => {
+        const { url } = this.props
+        Image.getSize(`${MOVIE_URL_DOMAIN}${url}`, (srcWidth, srcHeight) => {
             const maxHeight = Dimensions.get('window').height; 
             const maxWidth = Dimensions.get('window').width;
             const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
@@ -33,18 +37,24 @@ class PosterImage extends PureComponent<PropsPosterImage, StatePosterImage> {
 
     render() {
         const { height, width } = this.state
+        const { url } = this.props
         return (
             <View>
-                {/* <Text>{JSON.stringify(this.state)}</Text> */}
                 <Image 
                  style={{
-                    width:width-40,
-                    height,
+                    width:Dimensions.get("screen").width-10,
+                    // width:width-40,
+                    height:(height || 200),
                     overflow: "hidden",
-                    borderRadius:5
+                    borderTopLeftRadius:10,
+                    borderTopRightRadius:10,
+                    borderBottomLeftRadius:50,
+                    borderBottomRightRadius:50,
+                    borderWidth:0.4,
+                    borderColor:'#999999'
                 }}
                 resizeMode='cover'
-                source={{ uri: "https://image.tmdb.org/t/p/w500/hU1Q9YVzdYhokr8a9gLywnSUMlN.jpg" }} />
+                    source={{ uri: `${MOVIE_URL_DOMAIN}${url}` }} />
             </View>
         );
     }

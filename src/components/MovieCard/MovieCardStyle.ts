@@ -1,8 +1,8 @@
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet, Platform, Dimensions } from 'react-native';
 export default StyleSheet.create({
     wrapper: {
-        width: 187,
-        height: 350, //222+8 
+        width: Dimensions.get("screen").width/2-12,
+        // height: 325, //222+8 
         backgroundColor: 'black',
         margin: 6,
         borderRadius: 4,
@@ -36,7 +36,7 @@ export default StyleSheet.create({
         justifyContent: "flex-start",
         display: "flex",
         // alignItems: 'center',
-        height: '25%',
+        // height: '15%',
         width: "100%",
         textAlign: "left",
         // paddingLeft: 5,
@@ -44,7 +44,7 @@ export default StyleSheet.create({
         flexDirection: "column",
         // borderTopRightRadius:5,
         // borderTopLeftRadius:5
-        padding: 10,
+        padding: 5,
         alignItems:"center"
     },
     genreText: {

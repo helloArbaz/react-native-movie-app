@@ -1,6 +1,6 @@
 import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Dimensions, Image, Text, View } from 'react-native';
+import { Dimensions, Image, Text, TouchableOpacity, View } from 'react-native';
 import MovieCardStyle from "./MovieCardStyle"
 
 import { Feather, Entypo } from "@expo/vector-icons";
@@ -14,6 +14,7 @@ import { genreFilterById, genreNameOnly } from '../../helpers/getGenreFilter';
 
 interface PropsMovieCard {
     movieData: movieListData
+    navigateMobileDetails: any
 }
 interface StateMovieCard {
     width: any;
@@ -61,6 +62,8 @@ class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
         return _result.join("  |  ")
     }
 
+    navigateMobileDetails = (data?: any) => this.props.navigateMobileDetails(data)
+
     render() {
         const { height, width } = this.state;
         if (!height && !width) {
@@ -70,7 +73,7 @@ class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
         const { movieData } = this.props
         if (!movieData) { return null }
         return (
-            <View>
+            <TouchableOpacity activeOpacity={0.5} onPress={() => this.navigateMobileDetails(movieData)}>
                 <View style={MovieCardStyle.wrapper}>
                     <Image
                         resizeMode="cover"
@@ -97,7 +100,7 @@ class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
                         </Text>
                     </View>
                 </View>
-            </View>
+            </TouchableOpacity>
         );
     }
 }

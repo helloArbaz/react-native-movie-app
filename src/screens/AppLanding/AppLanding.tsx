@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { FlatList, SafeAreaView, SafeAreaViewBase, ScrollView, SectionList, StatusBar, StyleSheet, Text, Touchable, TouchableOpacity, View, } from 'react-native';
+import { Dimensions, FlatList, SafeAreaView, SafeAreaViewBase, ScrollView, SectionList, StatusBar, StyleSheet, Text, Touchable, TouchableOpacity, View, } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import { AppDispatch, RootState } from '../../store';
 import { API } from '../../services';
@@ -9,11 +9,10 @@ import { getMoviesList } from '../../services/getMovieList';
 import Header from '../../components/Header/Header';
 import AppLandingStyle from "./AppLandingStyle"
 import MovieCard from '../../components/MovieCard/MovieCard';
-import Loading from '../../components/Loading/Loading';
-import { data_data, sort_release_date } from '../../data/data';
-import { _dd, convertDataToSelectionListView, res, sortData } from '../../data/newData';
-import { movieGenre, movieListData } from '../../types';
+import Loading from '../../components/Loading/Loading';;
 import { loadMore } from '../../services/loadMore';
+import { FlashList } from '@shopify/flash-list';
+
 
 interface PropsAppLanding {
     navigation?: NavigationProp<any>;
@@ -27,15 +26,18 @@ interface StateAppLanding { }
 
 
 class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
+    ITEM_HEIGHT = 300
 
     constructor(props: PropsAppLanding) {
         super(props);
-        this.state = {}
+        this.state = {
+            loader:false
+        }
     }
 
     componentDidMount(): void { this.getImages() }
 
-    navigate = async (data?: any) => {
+    navigateMobileDetails = async (data?: any) => {
         let response = await this.props.getMoviesList()
         this.props.navigation?.navigate("movie-details", { data })
     }
@@ -44,18 +46,80 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
         await this.props.getMoviesList()
     }
 
-    onViewableItemsChanged = (event?: any) => {
-        console.log(JSON.stringify(event.changed[0].isViewable))
-
-    }
-
     loadMore = async () => {
         await this.props.loadMore()
     }
 
+
+    // 
+
+    _flatListrenderItem = (item: any) => {
+        return <MovieCard navigateMobileDetails={this.navigateMobileDetails} key={`${item.item.id}-${item.index}`} movieData={item.item} />
+    }
+
+    _flatListkeyExtractor = (item?: any, index?: any) => {
+        return `movie-card-${JSON.stringify(item.id)}`
+    }
+
+    _flatListgetItemLayout = (_?: any, index?: any) => { return { length: this.ITEM_HEIGHT, offset: this.ITEM_HEIGHT * index!, index } }
+
+
+    _selectionsListrenderItem = (item: any) => {
+        return <View>
+            {
+                item.index === 0 && <View style={{ flex: 1 }}>
+                    {/* <FlashList
+                            numColumns={2}
+                            renderItem={(item: any, index?: number) => <MovieCard key={`${item.item.id}-${index}`} movieData={item.item} />}
+                            data={this.props.data[index].data}
+                            removeClippedSubviews={true}
+                            onEndReachedThreshold={2}
+                            onEndReached={() => this.loadMore()}
+                            keyExtractor={(item) => JSON.stringify(item)}
+                            getItemType={(item:any) => {
+                                return item.type;
+                            }}
+                        /> */}
+
+
+
+                    <FlatList
+                        numColumns={2}
+                        renderItem={this._flatListrenderItem}
+                        data={this.props.data[item.index].data}
+                        keyExtractor={this._flatListkeyExtractor}
+                        removeClippedSubviews={true}
+                        onEndReachedThreshold={2}
+                        // onEndReached={() => this.loadMore()}
+                        maxToRenderPerBatch={8}
+                        initialNumToRender={8}
+                        windowSize={8}
+                        getItemLayout={this._flatListgetItemLayout}
+
+                    />
+                </View>
+            }
+        </View>
+    }
+
+    _selectionsListkeyExtractor = (item?: any, index?: any) => {
+        return `movie-card-${JSON.stringify(item.id)}`
+    }
+
+    _selectionsListgetItemLayout = (_?: any, index?: any) => { return { length: this.ITEM_HEIGHT, offset: this.ITEM_HEIGHT * index!, index } }
+
+    selectionsListRenderSectionHeader = (item?: any) => {
+        return (
+            <View style={{ width: 60, backgroundColor: 'rgba(17, 17, 17, 0.766)', borderBottomRightRadius: 5, borderTopRightRadius: 5 }}>
+                <Text style={[{ fontSize: 15, color: "white", fontWeight: "700", padding: 10, }
+                ]}>{item.section.title}</Text>
+            </View>
+        )
+    }
+
+
     render() {
         const { data, loader } = this.props
-        console.log(JSON.stringify(this.props.data),)
         return (
             <SafeAreaView style={AppLandingStyle.droidSafeArea}>
                 {loader && <Loading />}
@@ -64,35 +128,9 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
                     {/* <Text style={{color:"white"}}>{JSON.stringify(this.props.data)}</Text> */}
                     <SectionList
                         sections={this.props.data}
-                        keyExtractor={(item, index) => item + index}
-                        renderItem={({ item, index }) => (
-                            <View>
-                                {
-                                    index === 0 && <View>
-                                        <FlatList
-                                            numColumns={2}
-                                            renderItem={(item: any) => <MovieCard movieData={item.item} />}
-                                            data={this.props.data[index].data}
-                                            keyExtractor={(item) => JSON.stringify(item)}
-                                            removeClippedSubviews
-                                            onViewableItemsChanged={this.onViewableItemsChanged}
-                                            viewabilityConfig={{
-                                                viewAreaCoveragePercentThreshold: 95
-                                            }}
-                                            onEndReachedThreshold={2}
-                                            onEndReached={() => this.loadMore()}
-                                        />
-                                    </View>
-                                }
-                            </View>
-
-                        )}
-                        renderSectionHeader={({ section: { title } }) => (
-                            <View style={{ width: 60, backgroundColor: 'rgba(17, 17, 17, 0.766)', borderBottomRightRadius: 5, borderTopRightRadius: 5 }}>
-                                <Text style={[{ fontSize: 15, color: "white", fontWeight: "700", padding: 10, }
-                                ]}>{title}</Text>
-                            </View>
-                        )}
+                        keyExtractor={this._selectionsListkeyExtractor}
+                        renderItem={this._selectionsListrenderItem}
+                        renderSectionHeader={this.selectionsListRenderSectionHeader}
                         stickySectionHeadersEnabled
                     />
                 </View>

@@ -7,128 +7,91 @@ import { Feather, Entypo, } from "@expo/vector-icons";
 
 import Cast from '../../components/Cast/Cast';
 import { formatViewCountNumber } from '../../helpers/formatViewCountNumber';
+import { cast, geMovieDetailsByIdRequest, getMoiveCastByIdRequest, movieDetailsKeys, movieGenre, movieListData, production_companies, spoken_languages } from '../../types';
+import { AppDispatch, RootState } from '../../store';
+// import { getMovieDetailsById } from '../../services/getMOvieDetailsById';
+import { API } from '../../services';
+import { getMoiveCastById } from '../../services/getMoiveCastById';
+import { connect } from 'react-redux';
+import { getMovieDetailsById } from '../../services/getMovieDetailsById';
+import Loading from '../../components/Loading/Loading';
+import { genreFilterById, genreNameOnly } from '../../helpers/getGenreFilter';
+import { toHoursAndMinutes } from '../../helpers/minutesToHours';
 
 
 
-interface PropsMovieDetails { }
-interface StateMovieDetails { }
+interface PropsMovieDetails {
+    route?: any,
+    getMovieDetailsById: (reqData: getMoiveCastByIdRequest) => {}
+    getMoiveCastById: (reqData: getMoiveCastByIdRequest) => {}
+}
+
+interface StateMovieDetails {
+    movieDetail: movieDetailsKeys;
+    cast?: cast[]
+    loader: boolean;
+}
 
 class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
 
-    data =
-        {
-            "adult": false,
-            "backdrop_path": "/fY3lD0jM5AoHJMunjGWqJ0hRteI.jpg",
-            "belongs_to_collection": null,
-            "budget": 15000000,
-            "genres": [
-                {
-                    "id": 878,
-                    "name": "Science Fiction"
-                },
-                {
-                    "id": 27,
-                    "name": "Horror"
-                },
-                {
-                    "id": 28,
-                    "name": "Action"
-                },
-                {
-                    "id": 878,
-                    "name": "Science Fiction"
-                },
-                {
-                    "id": 27,
-                    "name": "Horror"
-                },
-                {
-                    "id": 28,
-                    "name": "Action"
-                }
-            ],
-            "homepage": "https://tickets.godzilla.com",
-            "id": 940721,
-            "imdb_id": "tt23289160",
-            "origin_country": [
-                "JP"
-            ],
-            "original_language": "ja",
-            "original_title": "ゴジラ-1.0",
-            "overview": "Postwar Japan is at its lowest point when a new crisis emerges in the form of a giant monster, baptized in the horrific power of the atomic bomb.",
-            "popularity": 1273.455,
-            "poster_path": "/hkxxMIGaiCTmrEArK7J56JTKUlB.jpg",
-            "production_companies": [
-                {
-                    "id": 882,
-                    "logo_path": "/iDw9Xxok1d9WAM2zFicI8p3khTH.png",
-                    "name": "TOHO",
-                    "origin_country": "JP"
-                },
-                {
-                    "id": 182161,
-                    "logo_path": "/wvG4lK0m76M6jK8WbWkXNecA7SP.png",
-                    "name": "TOHO Studios",
-                    "origin_country": "JP"
-                },
-                {
-                    "id": 12386,
-                    "logo_path": "/oxvw2Mrq3GcTxFc2mlT7E5tpek7.png",
-                    "name": "Robot Communications",
-                    "origin_country": "JP"
-                }
-            ],
-            "production_countries": [
-                {
-                    "iso_3166_1": "JP",
-                    "name": "Japan"
-                }
-            ],
-            "release_date": "2023-11-03",
-            "revenue": 115857413,
-            "runtime": 125,
-            "spoken_languages": [
-                {
-                    "english_name": "English",
-                    "iso_639_1": "en",
-                    "name": "English"
-                },
-                {
-                    "english_name": "Japanese",
-                    "iso_639_1": "ja",
-                    "name": "日本語"
-                }
-            ],
-            "status": "Released",
-            "tagline": "Postwar Japan. From zero to minus.",
-            "title": "Godzilla Minus One",
-            "video": false,
-            "vote_average": 7.671,
-            "vote_count": 1161
-        }
-
     constructor(props: PropsMovieDetails) {
         super(props);
-        this.state = {}
+        this.state = {
+            movieDetail: undefined!,
+            cast: undefined,
+            loader: true
+        }
+    }
+
+    componentDidMount(): void {
+        const { route } = this.props;
+        const { params } = route
+        const { data } = params
+        console.log(JSON.stringify(data), 'this.props=>>>')
+        this.initCalls()
+    }
+
+    initCalls = async () => {
+        try {
+            const { route } = this.props
+            let _id = route.params.data.id
+            const { getMovieDetailsById, getMoiveCastById } = this.props
+            let allResolved: any = await Promise.all([getMovieDetailsById({ id: _id }), getMoiveCastById({ id: _id })])
+            this.setState({ movieDetail: allResolved[0]['payload'], cast: allResolved[1]["payload"], loader: false })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
 
-
+    getGenreList = () => {
+        const { movieListData }: any = this.setState
+        if (movieListData.genre_ids) { }
+        let _result = [];
+        for (let index = 0; index < movieListData?.genre_ids.length; index++) {
+            let element: movieGenre = movieListData?.genre_ids[index]
+            genreFilterById(String(element))
+            _result.push(genreNameOnly(String(element)))
+        }
+        return _result.join("  |  ")
+    }
 
     render() {
-        let tt = formatViewCountNumber(1555)
+        const { movieDetail, cast, loader } = this.state
+        if (loader && !movieDetail) return <Loading />
+
         return (
-            <View style={{ flex: 1, backgroundColor: "black", paddingBottom: 100 }}>
-                <ScrollView fadingEdgeLength={100}>
-                    <View>
+            <SafeAreaView style={{ backgroundColor: "black", flex: 1 }}>
+                <ScrollView >
+                    <View style={{}}>
                         <View style={{ display: 'flex', justifyContent: "center", alignItems: 'center', }}>
-                            <View style={{ marginTop: 30 }}>
-                                <PosterImage />
+                            <View>
+                                <PosterImage url={movieDetail.poster_path} />
                             </View>
                         </View>
                         <View style={{
                             width: "100%",
-                            position: "absolute", padding: 10, bottom: 0, backgroundColor: 'rgba(17, 17, 17, 0.766)',
+                            position: "absolute", padding: 12, paddingRight: 25, paddingLeft: 25, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.732)',
                         }}>
 
                             <View style={{
@@ -138,8 +101,8 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
                                 flexDirection: "row",
                             }}>
                                 <View style={{ width: "70%", display: "flex", flexDirection: "column", }}>
-                                    <Text style={{ color: 'white', fontSize: 15, fontWeight: "bold", textAlign: "left", }}>
-                                        The Cook, the Thief, His Wife & Her Lover Lover
+                                    <Text style={{ color: 'white', fontSize: 20, fontWeight: "bold", textAlign: "left", }}>
+                                        {movieDetail.title}
                                     </Text>
                                 </View>
                                 <View style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end", alignItems: "flex-end", width: "30%", }}>
@@ -157,83 +120,120 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
                                             color: "white",
                                             fontSize: 12,
                                             fontWeight: "bold"
-                                        }}>(8.9)</Text>
+                                        }}>
+                                            {`${Math.ceil(parseInt(String(movieDetail.vote_average)))}`}
+                                        </Text>
                                     </View>
                                     <View>
-                                        <Text style={{ color: "white", fontSize: 10, marginTop: 5 }}>{`Views ( ${formatViewCountNumber(1555)} )`}</Text>
+                                        <Text style={{ color: "white", fontSize: 10, marginTop: 5 }}>{`Views ( ${formatViewCountNumber(movieDetail.vote_count)} )`}</Text>
                                     </View>
                                 </View>
                             </View>
                         </View>
                     </View>
-                    <View style={{ padding: 10, gap: 20 }}>
-                        <View style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 10, justifyContent: 'flex-start', marginTop: 20 }}>
+
+                    <View style={{ padding: 15, gap: 40, }}>
+                        <View style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
                             {
-                                this.data.genres.map((v, i) => {
-                                    return <View style={{ borderWidth: 1, borderColor: "white", borderRadius: 5 }}><Text style={{ color: 'white', marginRight: 10, marginLeft: 10, marginTop: 5, marginBottom: 5, fontSize: 10 }}>{v.name}s</Text></View>
+                                movieDetail.genres.map((v: movieGenre, index: any) => {
+                                    return <Text style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 5, paddingBottom: 5, color: "white", borderWidth: 0.5, borderColor: 'white', borderRadius: 5, fontSize: 12, fontWeight: "300" }}>{v.name}</Text>
                                 })
                             }
                         </View>
-                        <View>
-                            <Text style={{ fontSize: 15, fontWeight: "500", color: "white", }}>Synopsis</Text>
-                        </View>
-                        <View style={{ borderBottomWidth: 1, borderBlockColor: '#383e42', paddingBottom: 10 }}>
-                            <Text style={{ color: 'white', fontSize: 15, fontWeight: 100 }}>
-                                {this.data.overview}
-                            </Text>
-                        </View>
-
-                        <View>
-                            <Text style={{ fontSize: 15, fontWeight: "500", color: "white", }}>
-                                Languages
-                            </Text>
-                        </View>
-                        <View style={{ borderBottomWidth: 1, borderBlockColor: '#383e42', paddingBottom: 10 }}>
-                            <Text style={{ color: 'white', fontSize: 15, fontWeight: 100 }}>
-                                English | Hindi | Marathi
-                            </Text>
-                        </View>
 
 
-                        <View>
-                            <Text style={{ fontSize: 15, fontWeight: "500", color: "white", }}>Star cast</Text>
+                        
+
+
+                        <View style={{ display: "flex", justifyContent: "space-between", flexDirection: "row", padding: 20, borderTopWidth: 0.5, borderTopColor: "white", borderBottomWidth: 0.5, borderBottomColor: "white" }}>
+                            <View style={{ display: "flex", gap: 10, width: "33.33%", flexDirection: "column", justifyContent: "center", alignItems: "center", alignContent: "center" }}>
+                                <Entypo name="thumbs-up" size={25} color="#1791fc" />
+                                <Text style={{ color: "white", fontSize: 12 }}>{formatViewCountNumber(movieDetail.vote_count)}</Text>
+                            </View>
+                            <View style={{ display: "flex", gap: 10, width: "33.33%", flexDirection: "column", justifyContent: "center", alignItems: "center", alignContent: "center" }}>
+                                <Entypo name="star" size={25} color="#fcbd28" />
+                                <Text style={{ color: "white", fontSize: 12 }}>{`${Math.ceil(parseInt(String(movieDetail.vote_average)))}/10`}</Text>
+                            </View>
+                            <View style={{ display: "flex", gap: 10, width: "33.33%", flexDirection: "column", justifyContent: "center", alignItems: "center", alignContent: "center" }}>
+                                <Entypo name="plus" size={25} color="green" />
+                                <Text style={{ color: "white", fontSize: 12 }}>{formatViewCountNumber(movieDetail.popularity)}</Text>
+                            </View>
                         </View>
-                        <View style={{ borderBottomWidth: 1, borderBlockColor: '#383e42', paddingBottom: 10 }}>
-                            <View style={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                flexWrap: "wrap",
-                                justifyContent: "space-around",
-                                gap: 10
-                            }}>
+
+                        <View style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                            <Text style={{ color: "white" }}>{`Languages :`}</Text>
+                            <View style={{ display: "flex", flexDirection: "row", gap: 10, flexWrap: "wrap" }}>
                                 {
-                                    [1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((v, i) => {
-                                        return <Cast />
+                                    movieDetail.spoken_languages.map((v: spoken_languages, index: number) => {
+                                        return <Text style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 5, paddingBottom: 5, color: "white", borderWidth: 0.5, borderColor: 'white', borderRadius: 5, fontSize: 12, fontWeight: "300" }}>{v.english_name}</Text>
                                     })
                                 }
                             </View>
                         </View>
 
-                        <View>
-                            <Text style={{ fontSize: 15, fontWeight: "500", color: "white", }}>
-                                Production House
-                            </Text>
+                        <View style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                            <Text style={{ color: "white" }}>{`Movie Story : [ ${toHoursAndMinutes(movieDetail.runtime)} ]`}</Text>
+                            <Text style={{ color: "white", fontSize: 15, fontWeight: "100" }}>{movieDetail.overview}</Text>
+                        </View>
+                       
+                       
+                        <View style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                            <Text style={{ color: "white" }}>{`Cast :`}</Text>
+                            <Cast castList={cast} displayLength={10}/>
                         </View>
 
-                        <View style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 10, justifyContent: 'flex-start' }}>
-                            {
-                                this.data.production_companies.map((v, i) => {
-                                    return <View style={{ borderWidth: 1, borderColor: "white", borderRadius: 5 }}><Text style={{ color: 'white', marginRight: 10, marginLeft: 10, marginTop: 5, marginBottom: 5, fontSize: 10 }}>{v.name}</Text></View>
-                                })
-                            }
+
+                        <View style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                            <Text style={{ color: "white" }}>{`Production Houses :`}</Text>
+                            <View style={{ display: "flex", flexDirection: "row", gap: 10, flexWrap: "wrap" }}>
+                                {
+                                    movieDetail.production_companies.map((v: production_companies, index: number) => {
+                                        return <Text style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 5, paddingBottom: 5, color: "white", borderWidth: 0.5, borderColor: 'white', borderRadius: 5, fontSize: 12, fontWeight: "300" }}>{v.name}</Text>
+                                    })
+                                }
+                            </View>
                         </View>
+
+
+                       
 
                     </View>
+
                 </ScrollView>
-            </View>
+            </SafeAreaView>
         );
     }
 }
 
 
-export default MovieDetails;
+// export default MovieDetails;
+
+
+const mapStateToProps = (state: RootState) => ({
+    data: state.movieApp.data,
+});
+
+const mapDispatchToProps = (dispatch: AppDispatch) => ({
+    getMoiveCastById: (reqData: geMovieDetailsByIdRequest) => dispatch(API.getMoiveCastById(reqData)),
+    getMovieDetailsById: (reqData: geMovieDetailsByIdRequest) => dispatch(API.getMovieDetailsById(reqData))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MovieDetails)
+
+
+
+
+
+// const mapStateToProps = (state: RootState) => ({
+//     data: state.movieApp.data,
+//     filter: state.movieApp.selectedFilter,
+//     loader: state.movieApp.loader,
+//     rawData: state.movieApp.rawData
+// });
+
+// const mapDispatchToProps = (dispatch: AppDispatch) => ({
+//     getMoviesList: (reqData?: any) => dispatch(getMoviesList(reqData)),
+//     loadMore: (reqData?: any) => dispatch(loadMore(reqData))
+// });
+
+// export default connect(mapStateToProps, mapDispatchToProps)(AppLanding);
