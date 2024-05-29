@@ -84,7 +84,7 @@ class Header extends PureComponent<PropsHeader, StateHeader> {
                         {
                             [...this.getGenreFilter()].map((val: movieGenre, index: number) => {
                                 return <TouchableOpacity
-                                key={index}
+                                    key={index}
                                     onPress={() => this.changeFilter(val)}
                                     style={[HeaderStyle.genreFilter,
                                     { backgroundColor: selectedFilter?.id == val.id ? "#F0283C" : "#484848" }
@@ -113,7 +113,7 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
     changeFilter: (data: movieGenre) => dispatch(changeFilter(data)),
-    searchFilter: (query:string) => dispatch(searchFilter(query))
+    searchFilter: (query: string) => dispatch(searchFilter(query))
 });
 
 // export default Header;

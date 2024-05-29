@@ -1,4 +1,4 @@
-import { movieGenre } from "../types"
+import { movieGenre, YearFilter } from "../types"
 
 export const GET_FILTER_MAPPER: movieGenre[] = [
     { id: "1", name: "All" },
@@ -38,7 +38,23 @@ export const genreFilterById = (id: string) => {
 
 
 export const genreNameOnly = (id: string) => {
-    if(genreFilterIdMapper[id]){
+    if (genreFilterIdMapper[id]) {
         return genreFilterIdMapper[id].name
     }
+}
+
+
+export const MAX_YEAR = 2024
+export const MIN_YEAR = 2013
+
+
+const getYearList = () => {
+    let _mapper: any = {}
+    for (let index = MIN_YEAR; index < MAX_YEAR; index++) {
+        _mapper[index] = true
+    }
+}
+
+export const getYearFilter = {
+
 }

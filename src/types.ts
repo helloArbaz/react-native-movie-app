@@ -12,12 +12,12 @@ export type movieListData = {
     adult?: Boolean; //
     backdrop_path?: string; //
     genre_ids: []
-    id: string; 
+    id: string;
     original_language?: string //
     original_title?: string;
-    overview?: string 
+    overview?: string
     popularity?: string //
-    poster_path?: string | undefined; 
+    poster_path?: string | undefined;
     release_date?: string; //
     title?: string;
     video?: string //
@@ -80,8 +80,8 @@ export type cast = {
     "name": string,
     "original_name": string,
     "popularity": number | string,
-    "profile_path":string
-    "cast_id": number|string,
+    "profile_path": string
+    "cast_id": number | string,
     "character": string
     "credit_id": string,
     "order": 0
@@ -102,4 +102,19 @@ export type geMovieDetailsByIdRequest = {
 
 export type getMoiveCastByIdRequest = {
     id: string,
+}
+
+
+export type YearFilter = {
+    year: string;
+    active: boolean
+}
+
+
+export type yearObject = {
+    active: boolean
+}
+
+export type yearFilterMapperType = {
+    [key: string]: yearObject
 }

@@ -1,26 +1,28 @@
 import { ActionReducerMapBuilder, createSlice, isAction, PayloadAction } from '@reduxjs/toolkit';
 import { getMoviesList } from '../services/getMovieList';
 import { getGenreFilter } from '../services/getGenreFilter';
-import { movieGenre } from '../types';
-import { GET_FILTER_MAPPER } from '../helpers/getGenreFilter';
+import { movieGenre, YearFilter, yearFilterMapperType } from '../types';
+import { GET_FILTER_MAPPER, getYearFilter } from '../helpers/getGenreFilter';
 import { convertDataToSelectionListView, sortData } from '../data/newData';
 import { sortByGenreFilter } from '../helpers/sortByGenreFilter';
 import { loadMore } from '../services/loadMore';
-import { querBySearchFilter } from '../helpers/querdySearchFilter';
+import { querdySearchFilter } from '../helpers/querdySearchFilter';
+import { FILTER_MAPPER_CONST } from '../configs/filterConst';
+import { getNextYearFilterKey } from '../helpers/getNextYearFilterKey';
 
 interface MovieAppState {
     data?: any[]
     loader?: boolean,
     selectedFilter?: movieGenre,
     rawData?: any[],
-    maxYear: number
+    yearFilterMapper?: yearFilterMapperType
 }
 
 const initialState: MovieAppState = {
     data: [],
     loader: false,
     selectedFilter: GET_FILTER_MAPPER[0],
-    maxYear: 2024
+    yearFilterMapper: { ...FILTER_MAPPER_CONST }
 };
 
 
@@ -42,7 +44,7 @@ const movieAppSlice = createSlice({
         },
         searchFilter: (state: MovieAppState, action: PayloadAction<any>) => {
             if (action.payload) {
-                let result = querBySearchFilter(action.payload, state.rawData)
+                let result = querdySearchFilter(action.payload, state.rawData)
                 let final_result = dataSorting(result)
                 state.data = final_result
             } else {
@@ -54,19 +56,27 @@ const movieAppSlice = createSlice({
     },
     extraReducers: (builder: ActionReducerMapBuilder<any>): void => {
         builder.addCase(getMoviesList.pending, (state: any, action: any) => {
-            state.loader = false
+            state.loader = true
         });
         builder.addCase(getMoviesList.fulfilled, (state: MovieAppState, action: PayloadAction<any>) => {
-            let final_result = dataSorting(action?.payload?.results, state.data)
-            state.loader = false
-            state.data = final_result
-            state.rawData = action?.payload?.results
+            let _key = getNextYearFilterKey(state.yearFilterMapper);
+            if (_key) {
+                let mapaData: any = { title: _key, data: [...action.payload.results] }
+                state.data = [mapaData]
+                state.loader = false
+                state.yearFilterMapper![_key!]!.active = true
+            }
+            state;
+
         });
-        builder.addCase(loadMore.fulfilled, (state: MovieAppState, action: PayloadAction<any>) => {
-            let final_result = dataSorting(action?.payload?.results)
-            let _clone: any[] = [...state.data!];
-            _clone.push(...final_result)
-            state.data = _clone
+        builder.addCase(loadMore?.fulfilled, (state: MovieAppState, action: PayloadAction<any>) => {
+            let _key = getNextYearFilterKey(state.yearFilterMapper);
+            if (_key) {
+                let mapaData: any = { title: _key, data: [...action.payload.results] }
+                state.data?.push(mapaData)
+                state.yearFilterMapper![_key!]!.active = true
+                state.loader = false
+            }
             state
         });
     }

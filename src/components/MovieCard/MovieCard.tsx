@@ -1,6 +1,6 @@
 import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Dimensions, Image, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Dimensions, Text, TouchableOpacity, View } from 'react-native';
 import MovieCardStyle from "./MovieCardStyle"
 
 import { Feather, Entypo } from "@expo/vector-icons";
@@ -10,6 +10,9 @@ import { API_URL, MOVIE_URL_DOMAIN } from '../../configs/api.config';
 import { genreFilterById, genreNameOnly } from '../../helpers/getGenreFilter';
 import InViewPortTracker from '../InViewPort/InViewPort';
 import InViewPort from '../InViewPort/InViewPort';
+import FastImage from 'react-native-fast-image';
+// import { ImageBackground } from 'expo-image';
+import { Image as ExpoImage } from 'expo-image';
 
 
 
@@ -22,7 +25,6 @@ interface StateMovieCard {
     height: any;
     renderImage: boolean
 }
-
 
 class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
     constructor(props: PropsMovieCard) {
@@ -46,7 +48,7 @@ class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
 
             const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
             this.setState({ width: srcWidth * ratio, height: srcHeight * ratio * 0.5 });
-        }, error => {});
+        }, error => { });
     }
 
     getGenreList = () => {
@@ -77,7 +79,8 @@ class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
                             width: null, height,
                             overflow: "hidden",
                             borderRadius: 4
-                        }} />
+                        }}
+                    />
                     <View style={MovieCardStyle.rating}>
                         <View style={{ display: 'flex', flexDirection: "row" }}>
                             <Entypo

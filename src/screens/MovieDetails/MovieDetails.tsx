@@ -58,7 +58,7 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
             const { getMovieDetailsById, getMoiveCastById } = this.props
             let allResolved: any = await Promise.all([getMovieDetailsById({ id: _id }), getMoiveCastById({ id: _id })])
             this.setState({ movieDetail: allResolved[0]['payload'], cast: allResolved[1]["payload"], loader: false })
-        } catch (error) {}
+        } catch (error) { }
     }
 
 
@@ -126,7 +126,7 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
                         <View style={MovieDetailsStyle.moviGenreWrapper}>
                             {
                                 movieDetail?.genres?.map((v: movieGenre, index: any) => {
-                                    return <Text style={MovieDetailsStyle.genreList}>{v?.name}</Text>
+                                    return <Text key={`genre-${index}`} style={MovieDetailsStyle.genreList}>{v?.name}</Text>
                                 })
                             }
                         </View>
@@ -158,7 +158,7 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
                                 <Text style={MovieDetailsStyle.pageHeader}>{`Languages :`}</Text>
                                 {
                                     movieDetail?.spoken_languages?.map((v: spoken_languages, index: number) => {
-                                        return <Text style={MovieDetailsStyle.paddingRaidusUi}>{v?.english_name}</Text>
+                                        return <Text key={`language-${index}`} style={MovieDetailsStyle.paddingRaidusUi}>{v?.english_name}</Text>
                                     })
                                 }
                             </View>
@@ -181,7 +181,7 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
                             <View style={MovieDetailsStyle.productionWrapper}>
                                 {
                                     movieDetail?.production_companies?.map((v: production_companies, index: number) => {
-                                        return <Text style={MovieDetailsStyle.paddingRaidusUi}>{v?.name}</Text>
+                                        return <Text key={`production-${index}`} style={MovieDetailsStyle.paddingRaidusUi}>{v?.name}</Text>
                                     })
                                 }
                             </View>

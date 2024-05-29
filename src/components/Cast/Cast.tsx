@@ -45,13 +45,20 @@ class Cast extends PureComponent<PropsCast, StateCast> {
         const { sortdisplayCast } = this.state;
 
         return (
-            <FlatList
-                data={sortdisplayCast}
-                renderItem={this.renderItem}
-                numColumns={3}
-                contentContainerStyle={{ gap: 20 }}
-                columnWrapperStyle={{ gap: 20 }}
-            />
+            // <FlatList
+            //     data={sortdisplayCast}
+            //     renderItem={this.renderItem}
+            //     numColumns={3}
+            //     contentContainerStyle={{ gap: 20 }}
+            //     columnWrapperStyle={{ gap: 20 }}
+            // />
+            <View style={CastStyle.container}>
+                {
+                    sortdisplayCast.map((val: any, ind: number) => {
+                        return <Image key={`cast-${ind}`} style={CastStyle.image} source={{ uri: `${MOVIE_URL_DOMAIN}/${val.profile_path}` }} />
+                    })
+                }
+            </View>
         );
     }
 }

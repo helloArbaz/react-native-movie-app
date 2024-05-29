@@ -36,10 +36,13 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
         this.state = {
             loader: false
         }
-        this.onEndBlockApiCallWhileScroll = true;
+
     }
 
-    componentDidMount(): void { this.getImages() }
+    componentDidMount(): void {
+        this.getImages()
+        this.onEndBlockApiCallWhileScroll = true;
+    }
 
     navigateMobileDetails = async (data?: any) => {
         let response = await this.props.getMoviesList()
@@ -48,7 +51,7 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
 
     getImages = async () => {
         await this.props.getMoviesList()
-        this.onEndReachedThreshold = 0.5
+        this.onEndReachedThreshold = 0.6
     }
 
     loadMore = async () => {
@@ -58,7 +61,7 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
 
     // 
 
-    _flatListrenderItem = (item: any) => <MovieCard navigateMobileDetails={this.navigateMobileDetails} key={`${item.item.id}-${item.index}`} movieData={item.item} />
+    _flatListrenderItem = (item: any) => <View style={{ flex: 1 }}><MovieCard navigateMobileDetails={this.navigateMobileDetails} key={`${item.item.id}-${item.index}`} movieData={item.item} /></View>
     _flatListkeyExtractor = (item?: any, index?: any) => `movie-card-${JSON.stringify(item.id)}`
     _flatListgetItemLayout = (_?: any, index?: any) => { return { length: this.ITEM_HEIGHT, offset: this.ITEM_HEIGHT * index!, index } }
 
@@ -71,7 +74,8 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
     }
 
     _selectionsListrenderItem = (item: any) => {
-        return <View>
+        const { data } = this.props
+        return <View style={{ flex: 1 }}>
             {
                 item.index === 0 && <View style={{ flex: 1 }}>
                     {/* <FlashList
@@ -80,7 +84,7 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
                         data={this.props.data[item.index].data}
                         removeClippedSubviews={true}
                         onEndReachedThreshold={0.5}
-                        onEndReached={()=>this.onEndReached}
+                        onEndReached={() => this.onEndReached}
                         keyExtractor={(item) => JSON.stringify(item)}
                         getItemType={(item: any) => {
                             return item.type;
@@ -90,7 +94,7 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
                     <FlatList
                         numColumns={2}
                         renderItem={this._flatListrenderItem}
-                        data={this.props.data[item.index].data}
+                        data={data[item.index].data}
                         keyExtractor={this._flatListkeyExtractor}
                         removeClippedSubviews={true}
                         onEndReachedThreshold={this.onEndReachedThreshold}
@@ -120,13 +124,13 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
 
     render() {
         const { data, loader } = this.props
-        if (!data) return <Loading />
+        if (data.length === 0) return <Loading />
         return (
             <SafeAreaView style={AppLandingStyle.droidSafeArea}>
                 <View style={AppLandingStyle.droidSafeArea}>
                     <Header />
                     <SectionList
-                        sections={this.props.data}
+                        sections={data}
                         keyExtractor={this._selectionsListkeyExtractor}
                         renderItem={this._selectionsListrenderItem}
                         renderSectionHeader={this.selectionsListRenderSectionHeader}
@@ -146,7 +150,9 @@ const mapStateToProps = (state: RootState) => ({
     data: state?.movieApp?.data,
     filter: state?.movieApp?.selectedFilter,
     loader: state?.movieApp?.loader,
-    rawData: state?.movieApp?.rawData
+    rawData: state?.movieApp?.rawData,
+    yearFilterMapper: state?.movieApp?.yearFilterMapper
+
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
