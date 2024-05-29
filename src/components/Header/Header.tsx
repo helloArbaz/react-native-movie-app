@@ -108,7 +108,7 @@ class Header extends PureComponent<PropsHeader, StateHeader> {
 
 
 const mapStateToProps = (state: RootState) => ({
-    selectedFilter: state.movieApp.selectedFilter,
+    selectedFilter: state?.movieApp?.selectedFilter,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({

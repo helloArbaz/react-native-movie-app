@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { FlatList, Image, Text, View } from 'react-native';
 import { API_URL, MOVIE_URL_DOMAIN } from '../../configs/api.config';
 import { cast } from '../../types';
+import CastStyle from './CastStyle';
 
 
 interface PropsCast {
@@ -26,16 +27,16 @@ class Cast extends PureComponent<PropsCast, StateCast> {
     componentDidMount(): void {
         let { castList, displayLength } = this.props
         let _counter = [];
-        for (let index = 0; index < castList.cast.length; index++) {
-            const element = castList.cast[index];
+        for (let index = 0; index < castList?.cast?.length; index++) {
+            const element = castList?.cast[index];
             if (_counter.length == displayLength) break;
-            if (element.profile_path) _counter.push(element)
+            if (element?.profile_path) _counter.push(element)
         }
         this.setState({ sortdisplayCast: _counter })
     }
 
     renderItem = (item: any) => {
-        return <Image style={{ height: 150, width: 100, borderRadius: 10, overflow: "hidden" }} source={{ uri: `${MOVIE_URL_DOMAIN}/${item.item.profile_path}` }} />
+        return <Image style={CastStyle.image} source={{ uri: `${MOVIE_URL_DOMAIN}/${item.item.profile_path}` }} />
     }
 
 

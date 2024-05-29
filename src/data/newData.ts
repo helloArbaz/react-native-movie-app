@@ -1,3 +1,5 @@
+import store from "../store"
+
 const deleteUnwantedKeys = ["adult", "original_language", "original_title", "video"]
 
 
@@ -12,8 +14,13 @@ export const convertDataToSelectionListView = (data: any[]) => {
     return _finalResult
 }
 
-export const sortData = (data: any) => {
+export const sortData = (data: any,store?:any) => {
     let _mySet: any = {}
+    // let storeData = store.getState();
+
+    console.log(JSON.stringify(store),"----------")
+
+
     for (let index = 0; index < data.length; index++) {
         const element = data[index];
         let _yearCast = new Date(element.release_date).getFullYear();

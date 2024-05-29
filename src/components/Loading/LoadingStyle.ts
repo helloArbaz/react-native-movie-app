@@ -8,10 +8,8 @@ export default StyleSheet.create({
         bottom: 0,
         alignItems: 'center',
         justifyContent: 'center',
-        // backgroundColor:"red",
-        backgroundColor: 'rgba(0, 0, 0, 0.823)',
-        zIndex:999,
-
+        backgroundColor: 'black',
+        zIndex: 999,
     }
 });
 

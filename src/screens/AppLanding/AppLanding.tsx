@@ -27,12 +27,14 @@ interface StateAppLanding { }
 
 class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
     ITEM_HEIGHT = 300
+    onEndBlockApiCallWhileScroll: boolean;
 
     constructor(props: PropsAppLanding) {
         super(props);
         this.state = {
-            loader:false
+            loader: false
         }
+        this.onEndBlockApiCallWhileScroll = true;
     }
 
     componentDidMount(): void { this.getImages() }
@@ -64,38 +66,44 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
     _flatListgetItemLayout = (_?: any, index?: any) => { return { length: this.ITEM_HEIGHT, offset: this.ITEM_HEIGHT * index!, index } }
 
 
+    onEndReached = (event: any) => {
+        if (!this.onEndBlockApiCallWhileScroll) {
+            this.loadMore();
+            this.onEndBlockApiCallWhileScroll = true;
+        }
+    }
+
     _selectionsListrenderItem = (item: any) => {
         return <View>
             {
                 item.index === 0 && <View style={{ flex: 1 }}>
                     {/* <FlashList
-                            numColumns={2}
-                            renderItem={(item: any, index?: number) => <MovieCard key={`${item.item.id}-${index}`} movieData={item.item} />}
-                            data={this.props.data[index].data}
-                            removeClippedSubviews={true}
-                            onEndReachedThreshold={2}
-                            onEndReached={() => this.loadMore()}
-                            keyExtractor={(item) => JSON.stringify(item)}
-                            getItemType={(item:any) => {
-                                return item.type;
-                            }}
-                        /> */}
-
-
-
+                        numColumns={2}
+                        renderItem={this._flatListrenderItem}
+                        data={this.props.data[item.index].data}
+                        removeClippedSubviews={true}
+                        onEndReachedThreshold={0.5}
+                        onEndReached={()=>this.onEndReached}
+                        keyExtractor={(item) => JSON.stringify(item)}
+                        getItemType={(item: any) => {
+                            return item.type;
+                        }}
+                        onMomentumScrollBegin={() => { this.onEndBlockApiCallWhileScroll = false; }}
+                    /> */}
                     <FlatList
                         numColumns={2}
                         renderItem={this._flatListrenderItem}
                         data={this.props.data[item.index].data}
                         keyExtractor={this._flatListkeyExtractor}
                         removeClippedSubviews={true}
-                        onEndReachedThreshold={2}
-                        // onEndReached={() => this.loadMore()}
-                        maxToRenderPerBatch={8}
+                        onEndReachedThreshold={1}
+                        onEndReached={this.onEndReached}
+                        maxToRenderPerBatch={10}
                         initialNumToRender={8}
-                        windowSize={8}
+                        updateCellsBatchingPeriod={100}
+                        windowSize={11}
                         getItemLayout={this._flatListgetItemLayout}
-
+                        onMomentumScrollBegin={() => { this.onEndBlockApiCallWhileScroll = false; }}
                     />
                 </View>
             }
@@ -110,7 +118,7 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
 
     selectionsListRenderSectionHeader = (item?: any) => {
         return (
-            <View style={{ width: 60, backgroundColor: 'rgba(17, 17, 17, 0.766)', borderBottomRightRadius: 5, borderTopRightRadius: 5 }}>
+            <View style={AppLandingStyle.selectionListHeader}>
                 <Text style={[{ fontSize: 15, color: "white", fontWeight: "700", padding: 10, }
                 ]}>{item.section.title}</Text>
             </View>
@@ -120,18 +128,20 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
 
     render() {
         const { data, loader } = this.props
+        if(!data) return <Loading/>
         return (
             <SafeAreaView style={AppLandingStyle.droidSafeArea}>
                 {loader && <Loading />}
                 <View style={AppLandingStyle.droidSafeArea}>
                     <Header />
-                    {/* <Text style={{color:"white"}}>{JSON.stringify(this.props.data)}</Text> */}
                     <SectionList
                         sections={this.props.data}
                         keyExtractor={this._selectionsListkeyExtractor}
                         renderItem={this._selectionsListrenderItem}
                         renderSectionHeader={this.selectionsListRenderSectionHeader}
                         stickySectionHeadersEnabled
+                        style={{ flexGrow: 1 }}
+                        initialNumToRender={8}
                     />
                 </View>
             </SafeAreaView>
@@ -142,10 +152,10 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
 
 
 const mapStateToProps = (state: RootState) => ({
-    data: state.movieApp.data,
-    filter: state.movieApp.selectedFilter,
-    loader: state.movieApp.loader,
-    rawData: state.movieApp.rawData
+    data: state?.movieApp?.data,
+    filter: state?.movieApp?.selectedFilter,
+    loader: state?.movieApp?.loader,
+    rawData: state?.movieApp?.rawData
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({

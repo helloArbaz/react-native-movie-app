@@ -17,3 +17,7 @@ original_language mapper
 
 movie search api. [pages length ]
 https://api.themoviedb.org/3/search/movie?query=Avengers&api_key=2dca580c2a14b55200e784d157207b4d&page=2
+
+
+create build:
+eas build --profile preview

@@ -12,13 +12,15 @@ interface MovieAppState {
     data?: any[]
     loader?: boolean,
     selectedFilter?: movieGenre,
-    rawData?: any[]
+    rawData?: any[],
+    maxYear: number
 }
 
 const initialState: MovieAppState = {
     data: [],
     loader: false,
-    selectedFilter: GET_FILTER_MAPPER[0]
+    selectedFilter: GET_FILTER_MAPPER[0],
+    maxYear: 2024
 };
 
 
@@ -56,22 +58,24 @@ const movieAppSlice = createSlice({
             state.loader = false
         });
         builder.addCase(getMoviesList.fulfilled, (state: MovieAppState, action: PayloadAction<any>) => {
-            let final_result = dataSorting(action?.payload?.results)
+            let final_result = dataSorting(action?.payload?.results, state.data)
             state.loader = false
             state.data = final_result
             state.rawData = action?.payload?.results
         });
         builder.addCase(loadMore.fulfilled, (state: MovieAppState, action: PayloadAction<any>) => {
+            console.log("i Called ")
             let final_result = dataSorting(action?.payload?.results)
             let _clone: any[] = [...state.data!];
             _clone.push(...final_result)
             state.data = _clone
+            state
         });
     }
 });
 
-const dataSorting = (data?: any[]) => {
-    let sortedDs = sortData(data)
+const dataSorting = (data?: any[], storeData?: any) => {
+    let sortedDs = sortData(data, storeData)
     let final = convertDataToSelectionListView(sortedDs)
     return final
 }

@@ -17,6 +17,7 @@ import { getMovieDetailsById } from '../../services/getMovieDetailsById';
 import Loading from '../../components/Loading/Loading';
 import { genreFilterById, genreNameOnly } from '../../helpers/getGenreFilter';
 import { toHoursAndMinutes } from '../../helpers/minutesToHours';
+import MovieDetailsStyle from "./MovieDetailsStyle";
 
 
 
@@ -81,31 +82,27 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
         if (loader && !movieDetail) return <Loading />
 
         return (
-            <SafeAreaView style={{ backgroundColor: "black", flex: 1 }}>
+            <SafeAreaView style={MovieDetailsStyle.droidSafeArea}>
                 <ScrollView >
-                    <View style={{}}>
-                        <View style={{ display: 'flex', justifyContent: "center", alignItems: 'center', }}>
+                    <View>
+                        <View style={MovieDetailsStyle.posterWrapper}>
                             <View>
-                                <PosterImage url={movieDetail.poster_path} />
+                                <PosterImage url={movieDetail?.poster_path} />
                             </View>
                         </View>
-                        <View style={{
-                            width: "100%",
-                            position: "absolute", padding: 12, paddingRight: 25, paddingLeft: 25, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.732)',
-                        }}>
-
+                        <View style={MovieDetailsStyle.movieWrapper}>
                             <View style={{
                                 alignItems: 'center',
                                 alignContent: "center",
                                 display: "flex",
                                 flexDirection: "row",
                             }}>
-                                <View style={{ width: "70%", display: "flex", flexDirection: "column", }}>
-                                    <Text style={{ color: 'white', fontSize: 20, fontWeight: "bold", textAlign: "left", }}>
-                                        {movieDetail.title}
+                                <View style={MovieDetailsStyle.movieWrapperParent}>
+                                    <Text style={MovieDetailsStyle.movieTitle}>
+                                        {movieDetail?.title}
                                     </Text>
                                 </View>
-                                <View style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end", alignItems: "flex-end", width: "30%", }}>
+                                <View style={MovieDetailsStyle.ratingWrapper}>
                                     <View style={{ display: 'flex', flexDirection: "row" }}>
                                         <Entypo
                                             name="star"
@@ -116,16 +113,12 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
                                                 fontSize: 15
                                             }}
                                         />
-                                        <Text style={{
-                                            color: "white",
-                                            fontSize: 12,
-                                            fontWeight: "bold"
-                                        }}>
-                                            {`${Math.ceil(parseInt(String(movieDetail.vote_average)))}`}
+                                        <Text style={MovieDetailsStyle.votinText}>
+                                            {`${Math.ceil(parseInt(String(movieDetail?.vote_average)))}`}
                                         </Text>
                                     </View>
                                     <View>
-                                        <Text style={{ color: "white", fontSize: 10, marginTop: 5 }}>{`Views ( ${formatViewCountNumber(movieDetail.vote_count)} )`}</Text>
+                                        <Text style={{ color: "white", fontSize: 10, marginTop: 5 }}>{`Views ( ${formatViewCountNumber(movieDetail?.vote_count)} )`}</Text>
                                     </View>
                                 </View>
                             </View>
@@ -133,10 +126,10 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
                     </View>
 
                     <View style={{ padding: 15, gap: 40, }}>
-                        <View style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
+                        <View style={MovieDetailsStyle.moviGenreWrapper}>
                             {
-                                movieDetail.genres.map((v: movieGenre, index: any) => {
-                                    return <Text style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 5, paddingBottom: 5, color: "white", borderWidth: 0.5, borderColor: 'white', borderRadius: 5, fontSize: 12, fontWeight: "300" }}>{v.name}</Text>
+                                movieDetail?.genres?.map((v: movieGenre, index: any) => {
+                                    return <Text style={MovieDetailsStyle.genreList}>{v?.name}</Text>
                                 })
                             }
                         </View>
@@ -145,51 +138,53 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
 
 
 
-                        <View style={{ display: "flex", justifyContent: "space-between", flexDirection: "row", padding: 20, borderTopWidth: 0.5, borderTopColor: "white", borderBottomWidth: 0.5, borderBottomColor: "white" }}>
-                            <View style={{ display: "flex", gap: 10, width: "33.33%", flexDirection: "column", justifyContent: "center", alignItems: "center", alignContent: "center" }}>
+                        <View style={MovieDetailsStyle.movieInfoWrapper}>
+                            <View style={MovieDetailsStyle.movieInfoChild}>
                                 <Entypo name="thumbs-up" size={25} color="#1791fc" />
-                                <Text style={{ color: "white", fontSize: 12 }}>{formatViewCountNumber(movieDetail.vote_count)}</Text>
+                                <Text style={MovieDetailsStyle.movieInfoText}>{formatViewCountNumber(movieDetail?.vote_count)}</Text>
                             </View>
-                            <View style={{ display: "flex", gap: 10, width: "33.33%", flexDirection: "column", justifyContent: "center", alignItems: "center", alignContent: "center" }}>
+                            <View style={MovieDetailsStyle.movieInfoChild}>
                                 <Entypo name="star" size={25} color="#fcbd28" />
-                                <Text style={{ color: "white", fontSize: 12 }}>{`${Math.ceil(parseInt(String(movieDetail.vote_average)))} / 10`}</Text>
+                                <Text style={MovieDetailsStyle.movieInfoText}>{`${Math.ceil(parseInt(String(movieDetail?.vote_average)))} / 10`}</Text>
                             </View>
-                            <View style={{ display: "flex", gap: 10, width: "33.33%", flexDirection: "column", justifyContent: "center", alignItems: "center", alignContent: "center" }}>
+                            <View style={MovieDetailsStyle.movieInfoChild}>
                                 <Entypo name="plus" size={25} color="green" />
-                                <Text style={{ color: "white", fontSize: 12 }}>{Math.ceil(parseInt(String(movieDetail.popularity)))}</Text>
+                                <Text style={MovieDetailsStyle.movieInfoText}>{Math.ceil(parseInt(String(movieDetail?.popularity)))}</Text>
                             </View>
                         </View>
 
-                        <View style={{ display: "flex", flexDirection: "column", gap: 10 }}>
 
-                            <View style={{ display: "flex", flexDirection: "row", gap: 10, flexWrap: "wrap",alignItems:"center" }}>
-                                <Text style={{ color: "white", fontSize: 18, fontWeight: "600" }}>{`Languages :`}</Text>
+
+                        <View style={MovieDetailsStyle.wrapperForListing}>
+
+                            <View style={MovieDetailsStyle.languageContainter}>
+                                <Text style={MovieDetailsStyle.pageHeader}>{`Languages :`}</Text>
                                 {
-                                    movieDetail.spoken_languages.map((v: spoken_languages, index: number) => {
-                                        return <Text style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 5, paddingBottom: 5, color: "white", borderWidth: 0.5, borderColor: 'white', borderRadius: 5, fontSize: 12, fontWeight: "300" }}>{v.english_name}</Text>
+                                    movieDetail?.spoken_languages?.map((v: spoken_languages, index: number) => {
+                                        return <Text style={MovieDetailsStyle.paddingRaidusUi}>{v?.english_name}</Text>
                                     })
                                 }
                             </View>
                         </View>
 
-                        <View style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                            <Text style={{ color: "white", fontSize: 18, fontWeight: "600" }}>{`Movie Story : [ ${toHoursAndMinutes(movieDetail.runtime)} ]`}</Text>
-                            <Text style={{ color: "white", fontSize: 15, fontWeight: "100" }}>{movieDetail.overview}</Text>
+                        <View style={MovieDetailsStyle.wrapperForListing}>
+                            <Text style={MovieDetailsStyle.pageHeader}>{`Movie Story : [ ${toHoursAndMinutes(movieDetail?.runtime)} ]`}</Text>
+                            <Text style={MovieDetailsStyle.movieOverViewText}>{movieDetail?.overview}</Text>
                         </View>
 
 
                         <View style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-                            <Text style={{ color: "white", fontSize: 18, fontWeight: "600" }}>{`Cast :`}</Text>
+                            <Text style={MovieDetailsStyle.pageHeader}>{`Cast :`}</Text>
                             <Cast castList={cast} displayLength={10} />
                         </View>
 
 
-                        <View style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                            <Text style={{ color: "white", fontSize: 18, fontWeight: "600" }}>{`Production Houses :`}</Text>
-                            <View style={{ display: "flex", flexDirection: "row", gap: 10, flexWrap: "wrap" }}>
+                        <View style={MovieDetailsStyle.wrapperForListing}>
+                            <Text style={MovieDetailsStyle.pageHeader}>{`Production Houses :`}</Text>
+                            <View style={MovieDetailsStyle.productionWrapper}>
                                 {
-                                    movieDetail.production_companies.map((v: production_companies, index: number) => {
-                                        return <Text style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 5, paddingBottom: 5, color: "white", borderWidth: 0.5, borderColor: 'white', borderRadius: 5, fontSize: 12, fontWeight: "300" }}>{v.name}</Text>
+                                    movieDetail?.production_companies?.map((v: production_companies, index: number) => {
+                                        return <Text style={MovieDetailsStyle.paddingRaidusUi}>{v?.name}</Text>
                                     })
                                 }
                             </View>
@@ -211,7 +206,7 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
 
 
 const mapStateToProps = (state: RootState) => ({
-    data: state.movieApp.data,
+    data: state?.movieApp?.data,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({

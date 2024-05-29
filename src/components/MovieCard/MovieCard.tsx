@@ -8,7 +8,8 @@ import Loading from '../Loading/Loading';
 import { movieGenre, movieListData } from '../../types';
 import { API_URL, MOVIE_URL_DOMAIN } from '../../configs/api.config';
 import { genreFilterById, genreNameOnly } from '../../helpers/getGenreFilter';
-
+import InViewPortTracker from '../InViewPort/InViewPort';
+import InViewPort from '../InViewPort/InViewPort';
 
 
 
@@ -19,7 +20,7 @@ interface PropsMovieCard {
 interface StateMovieCard {
     width: any;
     height: any;
-    renderImage:boolean
+    renderImage: boolean
 }
 
 
@@ -29,7 +30,7 @@ class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
         this.state = {
             height: '',
             width: '',
-            renderImage:false
+            renderImage: false
         }
     }
 
@@ -66,10 +67,6 @@ class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
 
     render() {
         const { height, width } = this.state;
-        if (!height && !width) {
-            return null
-        }
-
         const { movieData } = this.props
         if (!movieData) { return null }
         return (
@@ -95,7 +92,7 @@ class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
                     </View>
 
                     <View style={[MovieCardStyle.genreContainer]}>
-                        <Text style={[MovieCardStyle.genreText, { color: "white", fontWeight: "500",fontSize:12 }]}>
+                        <Text style={[MovieCardStyle.genreText, { color: "white", fontWeight: "500", fontSize: 12 }]}>
                             {this.getGenreList()}
                         </Text>
                     </View>
