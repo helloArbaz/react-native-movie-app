@@ -30,9 +30,7 @@ class PosterImage extends PureComponent<PropsPosterImage, StatePosterImage> {
             const maxWidth = Dimensions.get('window').width;
             const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
             this.setState({ width: srcWidth * ratio, height: srcHeight * ratio });
-        }, error => {
-            console.log('error:', error);
-        });
+        }, error => {});
     }
 
     render() {

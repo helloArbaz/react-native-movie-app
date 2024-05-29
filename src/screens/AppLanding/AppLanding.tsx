@@ -28,6 +28,8 @@ interface StateAppLanding { }
 class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
     ITEM_HEIGHT = 300
     onEndBlockApiCallWhileScroll: boolean;
+    onEndReachedThreshold?: number
+
 
     constructor(props: PropsAppLanding) {
         super(props);
@@ -46,6 +48,7 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
 
     getImages = async () => {
         await this.props.getMoviesList()
+        this.onEndReachedThreshold = 0.5
     }
 
     loadMore = async () => {
@@ -55,14 +58,8 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
 
     // 
 
-    _flatListrenderItem = (item: any) => {
-        return <MovieCard navigateMobileDetails={this.navigateMobileDetails} key={`${item.item.id}-${item.index}`} movieData={item.item} />
-    }
-
-    _flatListkeyExtractor = (item?: any, index?: any) => {
-        return `movie-card-${JSON.stringify(item.id)}`
-    }
-
+    _flatListrenderItem = (item: any) => <MovieCard navigateMobileDetails={this.navigateMobileDetails} key={`${item.item.id}-${item.index}`} movieData={item.item} />
+    _flatListkeyExtractor = (item?: any, index?: any) => `movie-card-${JSON.stringify(item.id)}`
     _flatListgetItemLayout = (_?: any, index?: any) => { return { length: this.ITEM_HEIGHT, offset: this.ITEM_HEIGHT * index!, index } }
 
 
@@ -96,7 +93,7 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
                         data={this.props.data[item.index].data}
                         keyExtractor={this._flatListkeyExtractor}
                         removeClippedSubviews={true}
-                        onEndReachedThreshold={1}
+                        onEndReachedThreshold={this.onEndReachedThreshold}
                         onEndReached={this.onEndReached}
                         maxToRenderPerBatch={10}
                         initialNumToRender={8}
@@ -110,12 +107,8 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
         </View>
     }
 
-    _selectionsListkeyExtractor = (item?: any, index?: any) => {
-        return `movie-card-${JSON.stringify(item.id)}`
-    }
-
+    _selectionsListkeyExtractor = (item?: any, index?: any) => `movie-card-${JSON.stringify(item.id)}`
     _selectionsListgetItemLayout = (_?: any, index?: any) => { return { length: this.ITEM_HEIGHT, offset: this.ITEM_HEIGHT * index!, index } }
-
     selectionsListRenderSectionHeader = (item?: any) => {
         return (
             <View style={AppLandingStyle.selectionListHeader}>
@@ -125,13 +118,11 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
         )
     }
 
-
     render() {
         const { data, loader } = this.props
-        if(!data) return <Loading/>
+        if (!data) return <Loading />
         return (
             <SafeAreaView style={AppLandingStyle.droidSafeArea}>
-                {loader && <Loading />}
                 <View style={AppLandingStyle.droidSafeArea}>
                     <Header />
                     <SectionList

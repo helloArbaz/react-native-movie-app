@@ -5,7 +5,6 @@ import { geMovieDetailsByIdRequest } from "../types";
 export const getMovieDetailsById = createAsyncThunk("api/fetchMovieDetails", async (reqData: any) => {
     try {
         let url = `${API_GET_MOVIE_DETAILS}${reqData?.id}?api_key=${API_KEY}`
-        console.log(url,'[url]')
         const response = await fetch(url);
         const data = await response.json();
         return data;

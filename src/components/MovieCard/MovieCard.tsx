@@ -46,9 +46,7 @@ class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
 
             const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
             this.setState({ width: srcWidth * ratio, height: srcHeight * ratio * 0.5 });
-        }, error => {
-            console.log('error:', error);
-        });
+        }, error => {});
     }
 
     getGenreList = () => {

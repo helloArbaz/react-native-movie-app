@@ -48,7 +48,6 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
         const { route } = this.props;
         const { params } = route
         const { data } = params
-        console.log(JSON.stringify(data), 'this.props=>>>')
         this.initCalls()
     }
 
@@ -59,9 +58,7 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
             const { getMovieDetailsById, getMoiveCastById } = this.props
             let allResolved: any = await Promise.all([getMovieDetailsById({ id: _id }), getMoiveCastById({ id: _id })])
             this.setState({ movieDetail: allResolved[0]['payload'], cast: allResolved[1]["payload"], loader: false })
-        } catch (error) {
-            console.log(error)
-        }
+        } catch (error) {}
     }
 
 

@@ -6,7 +6,7 @@ import { GET_FILTER_MAPPER } from '../helpers/getGenreFilter';
 import { convertDataToSelectionListView, sortData } from '../data/newData';
 import { sortByGenreFilter } from '../helpers/sortByGenreFilter';
 import { loadMore } from '../services/loadMore';
-import { querdySearchFilter } from '../helpers/querdySearchFilter';
+import { querBySearchFilter } from '../helpers/querdySearchFilter';
 
 interface MovieAppState {
     data?: any[]
@@ -42,9 +42,8 @@ const movieAppSlice = createSlice({
         },
         searchFilter: (state: MovieAppState, action: PayloadAction<any>) => {
             if (action.payload) {
-                let result = querdySearchFilter(action.payload, state.rawData)
+                let result = querBySearchFilter(action.payload, state.rawData)
                 let final_result = dataSorting(result)
-                console.log(JSON.stringify(result), "{final_result}")
                 state.data = final_result
             } else {
                 let final_result = dataSorting(state.rawData)
@@ -64,7 +63,6 @@ const movieAppSlice = createSlice({
             state.rawData = action?.payload?.results
         });
         builder.addCase(loadMore.fulfilled, (state: MovieAppState, action: PayloadAction<any>) => {
-            console.log("i Called ")
             let final_result = dataSorting(action?.payload?.results)
             let _clone: any[] = [...state.data!];
             _clone.push(...final_result)
