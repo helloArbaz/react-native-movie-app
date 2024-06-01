@@ -11,7 +11,13 @@ import AppLandingStyle from "./AppLandingStyle"
 import MovieCard from '../../components/MovieCard/MovieCard';
 import Loading from '../../components/Loading/Loading';;
 import { loadMore } from '../../services/loadMore';
-import { FlashList } from '@shopify/flash-list';
+import { FlashList, JSFPSMonitor } from '@shopify/flash-list';
+import { getNextYearFilterKey } from '../../helpers/getNextYearFilterKey';
+import DataSetClass from '../../DataSet/DataSet';
+import { MAX_YEAR } from '../../configs/api.config';
+import { Feather, Entypo, FontAwesome } from "@expo/vector-icons";
+
+
 
 
 interface PropsAppLanding {
@@ -21,14 +27,20 @@ interface PropsAppLanding {
     data?: any,
     rawData?: any
     loader?: boolean
+    yearFilterMapper?: any
+    dataClone?: any
+    yearFilter?: any
+    selectedFilter?: any
 }
 interface StateAppLanding { }
 
+// const DataSet = new DataSetClass()
 
 class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
     ITEM_HEIGHT = 300
     onEndBlockApiCallWhileScroll: boolean;
     onEndReachedThreshold?: number
+    viewabilityConfig?: any
 
 
     constructor(props: PropsAppLanding) {
@@ -36,7 +48,12 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
         this.state = {
             loader: false
         }
-
+        this.onEndBlockApiCallWhileScroll = true;
+        this.viewabilityConfig = {
+            minimumViewTime: 0,
+            viewAreaCoveragePercentThreshold: 50,
+            waitForInteraction: false
+        };
     }
 
     componentDidMount(): void {
@@ -55,7 +72,10 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
     }
 
     loadMore = async () => {
-        await this.props.loadMore()
+        let yearFilter = this.props.yearFilter;
+        if ((yearFilter + 1) <= MAX_YEAR) {
+            await this.props.loadMore({ _key: this.props.yearFilter + 1 })
+        }
     }
 
 
@@ -67,11 +87,14 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
 
 
     onEndReached = (event: any) => {
-        if (!this.onEndBlockApiCallWhileScroll) {
-            this.loadMore();
+        const { selectedFilter } = this.props
+        if (!this.onEndBlockApiCallWhileScroll && selectedFilter.id == -1) {
+            this.loadMore()
             this.onEndBlockApiCallWhileScroll = true;
         }
     }
+
+    handleViewableItemsChanged = (data: any) => { }
 
     _selectionsListrenderItem = (item: any) => {
         const { data } = this.props
@@ -91,22 +114,27 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
                         }}
                         onMomentumScrollBegin={() => { this.onEndBlockApiCallWhileScroll = false; }}
                     /> */}
+
                     <FlatList
                         numColumns={2}
                         renderItem={this._flatListrenderItem}
-                        data={data[item.index].data}
+                        data={item.section.data}
                         keyExtractor={this._flatListkeyExtractor}
                         removeClippedSubviews={true}
-                        onEndReachedThreshold={this.onEndReachedThreshold}
-                        onEndReached={this.onEndReached}
+                        updateCellsBatchingPeriod={100}
+                        windowSize={3}
+                        getItemLayout={this._flatListgetItemLayout}
+
+                        viewabilityConfig={this.viewabilityConfig}
+                        // onViewableItemsChanged={({ viewableItems }) => this.handleViewableItemsChanged(viewableItems)}
                         maxToRenderPerBatch={10}
                         initialNumToRender={8}
-                        updateCellsBatchingPeriod={100}
-                        windowSize={11}
-                        getItemLayout={this._flatListgetItemLayout}
                         onMomentumScrollBegin={() => { this.onEndBlockApiCallWhileScroll = false; }}
+                        onEndReachedThreshold={this.onEndReachedThreshold}
+                        onEndReached={this.onEndReached}
                     />
                 </View>
+
             }
         </View>
     }
@@ -122,22 +150,39 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
         )
     }
 
+
+
     render() {
         const { data, loader } = this.props
-        if (data.length === 0) return <Loading />
+
         return (
-            <SafeAreaView style={AppLandingStyle.droidSafeArea}>
+            <SafeAreaView style={AppLandingStyle.droidSafeArea} > 
+
+                {loader && <Loading />}
+
                 <View style={AppLandingStyle.droidSafeArea}>
                     <Header />
-                    <SectionList
-                        sections={data}
-                        keyExtractor={this._selectionsListkeyExtractor}
-                        renderItem={this._selectionsListrenderItem}
-                        renderSectionHeader={this.selectionsListRenderSectionHeader}
-                        stickySectionHeadersEnabled
-                        style={{ flexGrow: 1 }}
-                        initialNumToRender={8}
-                    />
+                    {
+                        data && data.length == 0 && (
+                            <View style={{ flex: 1, justifyContent: "center", alignContent: "center", alignItems: "center" ,gap:10}}>
+                                <FontAwesome name="chain-broken" size={40} color="#FFFFFF" style={{ padding: 1, marginRight: 15 }} />
+                                <Text style={{ color: 'white', fontSize:20 }}>Match Not Record</Text>
+                            </View>
+                        )
+                    }
+
+
+                    {
+                        data && data.length > 0 && <SectionList
+                            sections={data}
+                            keyExtractor={this._selectionsListkeyExtractor}
+                            renderItem={this._selectionsListrenderItem}
+                            renderSectionHeader={this.selectionsListRenderSectionHeader}
+                            stickySectionHeadersEnabled
+                            style={{ flexGrow: 1 }}
+                            initialNumToRender={8}
+                        />
+                    }
                 </View>
             </SafeAreaView>
         );
@@ -148,10 +193,9 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
 
 const mapStateToProps = (state: RootState) => ({
     data: state?.movieApp?.data,
-    filter: state?.movieApp?.selectedFilter,
-    loader: state?.movieApp?.loader,
-    rawData: state?.movieApp?.rawData,
-    yearFilterMapper: state?.movieApp?.yearFilterMapper
+    yearFilter: state.movieApp.yearFilter,
+    selectedFilter: state.movieApp.selectedFilter,
+    loader: state.movieApp.loader
 
 });
 

@@ -1,6 +1,7 @@
 export type movieGenre = {
     id?: string | number;
     name?: string;
+    isActive?:boolean
 }
 
 export type listOfYear = {

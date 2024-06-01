@@ -27,10 +27,6 @@ export default class extends React.Component {
                   headerBackButtonMenuEnabled: false,
                   headerShown: false,
                   headerTitle: "",
-                   
-                  headerStyle: {
-                    backgroundColor: "black",
-                  }
                 }
               }
 

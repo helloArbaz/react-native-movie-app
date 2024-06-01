@@ -1,0 +1,114 @@
+import { ActionReducerMapBuilder, createSlice, isAction, PayloadAction } from '@reduxjs/toolkit';
+import { getMoviesList } from '../services/getMovieList';
+import { movieGenre, yearFilterMapperType } from '../types';
+import { GET_FILTER_MAPPER } from '../helpers/getGenreFilter';
+import { loadMore } from '../services/loadMore';
+import { FILTER_MAPPER_CONST } from '../configs/filterConst';
+import { getNextYearFilterKey } from '../helpers/getNextYearFilterKey';
+import DataSetClass from '../DataSet/DataSet';
+
+interface MovieAppState {
+    data?: any[]
+    dataClone?: any[]
+    loader?: boolean,
+    selectedFilter?: movieGenre,
+    rawData?: any[],
+    yearFilterMapper?: yearFilterMapperType,
+    genreFilterData?: any
+}
+
+const initialState: MovieAppState = {
+    data: [],
+    loader: false,
+    selectedFilter: GET_FILTER_MAPPER[0],
+    yearFilterMapper: { ...FILTER_MAPPER_CONST },
+    genreFilterData: {},
+    dataClone: []
+};
+
+
+const DataSet = new DataSetClass()
+
+const movieAppSlice = createSlice({
+    name: 'MovieAppState',
+    initialState,
+    reducers: {
+        changeFilter: (state: MovieAppState, action: PayloadAction<any>) => {
+            state.selectedFilter = action.payload
+            let _id: any = action?.payload?.id
+            console.log(_id,"----")
+            if (_id === -1) {
+                console.log(state.dataClone,'state.dataClone')
+                state.data = state.dataClone
+            } else {
+                state.data = state.genreFilterData[String(_id)]
+            }
+            state
+        },
+        searchFilter: (state: MovieAppState, action: PayloadAction<any>) => {
+            console.log(action.payload, 'action.payload')
+            state;
+        }
+    },
+    extraReducers: (builder: ActionReducerMapBuilder<any>): void => {
+        builder.addCase(getMoviesList.pending, (state: any, action: any) => {
+            state.loader = true
+        });
+        builder.addCase(getMoviesList.fulfilled, (state: MovieAppState, action: PayloadAction<any>) => {
+            try {
+                for (let index = 0; index < action.payload.results.length; index++) {
+                    const element = action.payload.results[index];
+                    let _year = new Date(element.release_date).getFullYear()
+
+                    for (let genre = 0; genre < element.genre_ids.length; genre++) {
+                        const elementJ = element.genre_ids[genre];
+                        if (state.genreFilterData[elementJ]) {
+                            let _key = state.genreFilterData[elementJ];
+                            let _key0 = _key[0]
+                            _key0.data.push(element)
+                        } else {
+                            state.genreFilterData[elementJ] = [
+                                {
+                                    title: _year,
+                                    data: [element]
+                                }
+                            ]
+                        }
+                    }
+                }
+            } catch (e) {
+                console.log(e, 'error')
+            }
+
+            let _key = getNextYearFilterKey(state.yearFilterMapper);
+            if (_key) return _keyBasedMapping(state, action.payload.results, _key)
+            console.log(JSON.stringify(state.data), "----")
+            state;
+
+        });
+        builder.addCase(loadMore?.fulfilled, (state: MovieAppState, action: PayloadAction<any>) => {
+            console.log(JSON.stringify(action.payload), '====')
+            let _key = getNextYearFilterKey(state.yearFilterMapper);
+            console.log(_key ? true : false, "[][falsefalse][]")
+            console.log(_key, "[][][]++++]]]]]]]")
+            if (_key) {
+                console.log("sasfsdfdsfsdfsdf")
+                let dd = _keyBasedMapping(state, action.payload.results, _key)
+                console.log(JSON.stringify(dd), "state.datastat")
+            }
+            // stated
+        });
+    }
+});
+
+const _keyBasedMapping = (state?: any, payload?: any, key?: string) => {
+    let mapaData: any = { title: key, data: [...payload] }
+    state.data.push(mapaData)
+    state.dataClone = JSON.parse(JSON.stringify(state.data));
+    state.yearFilterMapper![key!]!.active = true
+    state.loader = false
+    return state;
+}
+
+export const { changeFilter, searchFilter } = movieAppSlice.actions;
+export default movieAppSlice.reducer;

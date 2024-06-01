@@ -69,14 +69,19 @@ class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
         const { height, width } = this.state;
         const { movieData } = this.props
         if (!movieData) { return null }
+
         return (
             <TouchableOpacity activeOpacity={0.5} onPress={() => this.navigateMobileDetails(movieData)}>
                 <View style={MovieCardStyle.wrapper}>
                     <Image
                         resizeMode="cover"
                         source={{ uri: `${MOVIE_URL_DOMAIN}${movieData.poster_path}` }}
+                        // src={imageLoaderAlt}
+                        // source={require('../../../assets/imageAlt.gif')}
+                        alt={require('../../../assets/imageAlt.gif')}
                         style={{
-                            width: null, height,
+                            width: null,
+                            height: height,
                             overflow: "hidden",
                             borderRadius: 4
                         }}

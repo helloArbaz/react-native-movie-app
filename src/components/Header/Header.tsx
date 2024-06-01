@@ -76,7 +76,7 @@ class Header extends PureComponent<PropsHeader, StateHeader> {
                         </TouchableOpacity>
                     }
 
-                    {_showSearchBar && <SearchBar searchFilter={this.props.searchFilter} setSearchBarVisibility={this.setSearchBarVisibility} />}
+                    {_showSearchBar && <SearchBar  setSearchBarVisibility={this.setSearchBarVisibility} />}
 
                 </View>
                 <View style={HeaderStyle.filterWrapper}>

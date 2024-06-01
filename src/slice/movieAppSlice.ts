@@ -1,57 +1,58 @@
 import { ActionReducerMapBuilder, createSlice, isAction, PayloadAction } from '@reduxjs/toolkit';
 import { getMoviesList } from '../services/getMovieList';
-import { getGenreFilter } from '../services/getGenreFilter';
-import { movieGenre, YearFilter, yearFilterMapperType } from '../types';
-import { GET_FILTER_MAPPER, getYearFilter } from '../helpers/getGenreFilter';
-import { convertDataToSelectionListView, sortData } from '../data/newData';
-import { sortByGenreFilter } from '../helpers/sortByGenreFilter';
+import { movieGenre, yearFilterMapperType } from '../types';
+import { GET_FILTER_MAPPER } from '../helpers/getGenreFilter';
 import { loadMore } from '../services/loadMore';
-import { querdySearchFilter } from '../helpers/querdySearchFilter';
 import { FILTER_MAPPER_CONST } from '../configs/filterConst';
 import { getNextYearFilterKey } from '../helpers/getNextYearFilterKey';
+import DataSetClass from '../DataSet/DataSet';
+import { MIN_YEAR } from '../configs/api.config';
 
 interface MovieAppState {
     data?: any[]
-    loader?: boolean,
+    yearFilter: number
     selectedFilter?: movieGenre,
-    rawData?: any[],
-    yearFilterMapper?: yearFilterMapperType
+    loader: boolean
+    searchQuery?: string
 }
 
 const initialState: MovieAppState = {
     data: [],
+    yearFilter: MIN_YEAR,
+    selectedFilter: { ...GET_FILTER_MAPPER[0], isActive: false },
     loader: false,
-    selectedFilter: GET_FILTER_MAPPER[0],
-    yearFilterMapper: { ...FILTER_MAPPER_CONST }
+    searchQuery: ""
 };
 
+
+const DataSet = new DataSetClass()
 
 const movieAppSlice = createSlice({
     name: 'MovieAppState',
     initialState,
     reducers: {
         changeFilter: (state: MovieAppState, action: PayloadAction<any>) => {
-            let filterResposne = sortByGenreFilter(state.rawData!, action.payload)
             state.selectedFilter = action.payload
-            if (action.payload.id == 1) {
-                let sortedDs = sortData(state.rawData)
-                let final = convertDataToSelectionListView(sortedDs)
-                state.data = final
-            }
-            else {
-                state.data = filterResposne
+            if (state.selectedFilter?.id != -1) {
+                state.data = DataSet.getGenreFilterResult(action.payload.id, String(state.selectedFilter?.id)) || []
+            } else {
+                state.data = DataSet.getDataSet()
             }
         },
         searchFilter: (state: MovieAppState, action: PayloadAction<any>) => {
-            if (action.payload) {
-                let result = querdySearchFilter(action.payload, state.rawData)
-                let final_result = dataSorting(result)
-                state.data = final_result
-            } else {
-                let final_result = dataSorting(state.rawData)
-                state.data = final_result
-                state.rawData = action?.payload?.results
-            }
+            state.searchQuery = action.payload
+            state.data = DataSet.querySearch(action.payload) || []
+            state.loader = false
+        },
+        showLoader: (state: MovieAppState) => {
+            state.loader = true
+        },
+        resetDataSet: (state: MovieAppState) => {
+            state.loader = false
+            state.data = DataSet.getDataSet() || []
+        },
+        setSearchQuery: (state: MovieAppState, action: PayloadAction<any>) => {
+            state.searchQuery = action.payload
         }
     },
     extraReducers: (builder: ActionReducerMapBuilder<any>): void => {
@@ -59,34 +60,16 @@ const movieAppSlice = createSlice({
             state.loader = true
         });
         builder.addCase(getMoviesList.fulfilled, (state: MovieAppState, action: PayloadAction<any>) => {
-            let _key = getNextYearFilterKey(state.yearFilterMapper);
-            if (_key) {
-                let mapaData: any = { title: _key, data: [...action.payload.results] }
-                state.data = [mapaData]
-                state.loader = false
-                state.yearFilterMapper![_key!]!.active = true
-            }
-            state;
-
+            state.data = DataSet.updateDataSet(action.payload.results, state.yearFilter).getDataSet()
+            state.loader = false
         });
         builder.addCase(loadMore?.fulfilled, (state: MovieAppState, action: PayloadAction<any>) => {
-            let _key = getNextYearFilterKey(state.yearFilterMapper);
-            if (_key) {
-                let mapaData: any = { title: _key, data: [...action.payload.results] }
-                state.data?.push(mapaData)
-                state.yearFilterMapper![_key!]!.active = true
-                state.loader = false
-            }
-            state
+            state.yearFilter = state.yearFilter + 1
+            state.data = DataSet.updateDataSet(action.payload.results, state.yearFilter).getDataSet()
         });
     }
 });
 
-const dataSorting = (data?: any[], storeData?: any) => {
-    let sortedDs = sortData(data, storeData)
-    let final = convertDataToSelectionListView(sortedDs)
-    return final
-}
 
-export const { changeFilter, searchFilter } = movieAppSlice.actions;
+export const { changeFilter, searchFilter, showLoader, resetDataSet, } = movieAppSlice.actions;
 export default movieAppSlice.reducer;

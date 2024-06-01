@@ -1,17 +1,25 @@
 import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Button, TextInput, View } from 'react-native';
+import { Button, Keyboard, TextInput, View } from 'react-native';
 
 import { Feather, Entypo } from "@expo/vector-icons";
 import SearchBarStyle from './SearchBarStyle';
+import debounce from 'lodash/debounce';
+import { AppDispatch, RootState } from '../../store';
+import { connect } from 'react-redux';
+import { resetDataSet, searchFilter, setSearchQuery, showLoader } from '../../slice/movieAppSlice';
 
 
 interface PropsSearchBar {
     setSearchBarVisibility: any,
-    searchFilter: any
+    showLoader: () => {}
+    searchFilter: (reqData?: any) => {}
+    resetDataSet: () => {}
+    setSearchQuery: () => {}
 }
 interface StateSearchBar {
     _searchValue: string
+
 }
 
 class SearchBar extends PureComponent<PropsSearchBar, StateSearchBar> {
@@ -20,27 +28,36 @@ class SearchBar extends PureComponent<PropsSearchBar, StateSearchBar> {
         this.state = {
             _searchValue: ''
         }
+        this.handleSearch = debounce(this.handleSearch.bind(this), 1000);
     }
 
-
-    setSearchValue = (newText: any) => {
-        const { searchFilter } = this.props
-        this.setState({ _searchValue: newText }, () => {
-            searchFilter(this.state._searchValue)
+    inputChange = (query: string) => {
+        this.setState({ _searchValue: query }, () => {
+            if (this.state._searchValue)
+                this.handleSearch(query);
         });
+    };
+
+    handleSearch(query: string) {
+        Keyboard.dismiss()
+        this.props.showLoader()
+        this.props.searchFilter(query)
     }
 
     searchBarCrossClick = () => {
-        const { _searchValue} = this.state
+        const { _searchValue } = this.state
         const { searchFilter } = this.props
 
-        const {setSearchBarVisibility} = this.props
-        if( _searchValue){
-            this.setState({ _searchValue: '' });
+        const { setSearchBarVisibility } = this.props
+        if (_searchValue) {
+            this.setState({ _searchValue: '' }, () => {
+                if (this.state._searchValue == "") this.props.resetDataSet()
+            });
             return
+        } else {
+            this.props.resetDataSet()
+            setSearchBarVisibility(null)
         }
-        setSearchBarVisibility()
-        searchFilter(null)
 
     }
 
@@ -65,18 +82,34 @@ class SearchBar extends PureComponent<PropsSearchBar, StateSearchBar> {
                         placeholderTextColor={"#8c8c8c"}
                         placeholder="Search"
                         value={_searchValue}
-                        onChangeText={newText => this.setSearchValue(newText)}
+                        onChangeText={newText => this.inputChange(newText)}
+                        autoFocus
                     />
 
-                    <Entypo name="cross" size={25} color="#FFFFFF" style={{ padding: 1, marginRight: 15 }} onPress={() => {
-                            this.searchBarCrossClick()
-                            // setSearchPhrase("")
-
-                    }} />
+                    <Entypo name="cross" size={25} color="#FFFFFF" style={{ padding: 1, marginRight: 15 }} onPress={() => { this.searchBarCrossClick() }} />
                 </View>
             </View>
         );
     }
 }
 
-export default SearchBar;
+// export default SearchBar;
+
+
+
+const mapStateToProps = (state: RootState) => ({
+    data: state?.movieApp?.data,
+    yearFilter: state.movieApp.yearFilter,
+    selectedFilter: state.movieApp.selectedFilter
+
+});
+
+const mapDispatchToProps = (dispatch: AppDispatch) => ({
+    showLoader: () => dispatch(showLoader()),
+    searchFilter: (reqData?: any) => dispatch(searchFilter(reqData)),
+    resetDataSet: (reqData?: any) => dispatch(resetDataSet()),
+    setSearchQuery: (reqData?: any) => dispatch(setSearchQuery()),
+    // loadMore: (reqData?: any) => dispatch(loadMore(reqData))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchBar);
