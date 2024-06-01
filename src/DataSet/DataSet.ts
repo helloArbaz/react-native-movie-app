@@ -1,15 +1,21 @@
+import cloneDeep from 'lodash/cloneDeep';
+
+
 export default class DataSetClass {
     data: any = [];
     genreBasedFilter: any = {}
+    que_keyMapper: any[] = []
 
     constructor() { }
 
 
     updateDataSet(result: any, yearFilter?: any) {
-        this.createKeyPairValueForGenreIds(result)
+        // setTimeout(() => this.createKeyPairValueForGenreIds(result), 200)
+        this.que_keyMapper.push(result)
         let _clonet = [...this.data];
         _clonet.push({ title: yearFilter, data: [...result] });
         this.data = _clonet
+        this.createKeyPairValueForGenreIds()
         return this;
     }
 
@@ -17,38 +23,25 @@ export default class DataSetClass {
         return this.data;
     }
 
-    createKeyPairValueForGenreIds(result: any) {
-        if (result && result.length > 0) {
-            try {
-                for (let i = 0; i < result.length; i++) {
-                    const ielement = result[i];
-                    let year = new Date(result[0].release_date).getFullYear()
-                    for (let j = 0; j < ielement.genre_ids.length; j++) {
-                        const jelement = ielement.genre_ids[j];
-
-                        if (this.genreBasedFilter[jelement]) {
-                            let res: any = this.genreBasedFilter[jelement].filter((v: any, i: any) => v.title == year)
-                            if (res.length > 0) res[0].data.push(ielement)
-                            else {
-                                this.genreBasedFilter[jelement] = [...this.genreBasedFilter[jelement]]
-                                this.genreBasedFilter[jelement].push({ title: year, data: [ielement] })
-                            }
-                        }
-                        else this.genreBasedFilter[jelement] = [{ title: year, data: [ielement] }]
-                    }
-                }
-            } catch (e) {
-                console.error(e)
-            }
-        }
+    createKeyPairValueForGenreIds() {
     }
 
-    getGenreFilterResult(id: any, query?: string) {
-        let result = this.genreBasedFilter[id]
-        if (result) {
-            if (id == -1) return this.data
-            else return this.genreBasedFilter[id]
-        } else[]
+    getGenreFilterResult(id: any) {
+        if (id == -1) return this.data
+        let _cloneData = cloneDeep(this.data)
+        for (let i = 0; i < _cloneData.length; i++) {
+            let _filterResult = []
+            const ielement = _cloneData[i];
+            for (let j = 0; j < ielement.data.length; j++) {
+                const jelement = ielement.data[j];
+                if (jelement.genre_ids.includes(parseInt(id))) {
+                    _filterResult.push(jelement)
+                }
+            }
+            _cloneData[i]['data'].length = 0;
+            _cloneData[i]['data'].push(..._filterResult)
+        }
+        return _cloneData;
     }
 
     querySearch(query?: any) {

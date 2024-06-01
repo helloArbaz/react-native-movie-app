@@ -155,8 +155,10 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
     render() {
         const { data, loader } = this.props
 
+        console.log(JSON.stringify(data),'"data')
+
         return (
-            <SafeAreaView style={AppLandingStyle.droidSafeArea} > 
+            <SafeAreaView style={AppLandingStyle.droidSafeArea} >
 
                 {loader && <Loading />}
 
@@ -164,9 +166,9 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
                     <Header />
                     {
                         data && data.length == 0 && (
-                            <View style={{ flex: 1, justifyContent: "center", alignContent: "center", alignItems: "center" ,gap:10}}>
+                            <View style={{ flex: 1, justifyContent: "center", alignContent: "center", alignItems: "center", gap: 10 }}>
                                 <FontAwesome name="chain-broken" size={40} color="#FFFFFF" style={{ padding: 1, marginRight: 15 }} />
-                                <Text style={{ color: 'white', fontSize:20 }}>Match Not Record</Text>
+                                <Text style={{ color: 'white', fontSize: 20 }}>Match Not Record</Text>
                             </View>
                         )
                     }

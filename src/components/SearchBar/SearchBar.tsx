@@ -7,7 +7,7 @@ import SearchBarStyle from './SearchBarStyle';
 import debounce from 'lodash/debounce';
 import { AppDispatch, RootState } from '../../store';
 import { connect } from 'react-redux';
-import { resetDataSet, searchFilter, setSearchQuery, showLoader } from '../../slice/movieAppSlice';
+import { resetDataSet, searchFilter, showLoader } from '../../slice/movieAppSlice';
 
 
 interface PropsSearchBar {

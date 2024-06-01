@@ -52,15 +52,16 @@ class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
     }
 
     getGenreList = () => {
-        const { movieData } = this.props
-        if (movieData.genre_ids) { }
-        let _result = [];
-        for (let index = 0; index < movieData?.genre_ids.length; index++) {
-            let element: movieGenre = movieData?.genre_ids[index]
-            genreFilterById(String(element))
-            _result.push(genreNameOnly(String(element)))
-        }
-        return _result.join("  |  ")
+        // const { movieData } = this.props
+        // if (movieData.genre_ids) { }
+        // let _result = [];
+        // for (let index = 0; index < movieData?.genre_ids.length; index++) {
+        //     let element: movieGenre = movieData?.genre_ids[index]
+        //     genreFilterById(String(element))
+        //     _result.push(genreNameOnly(String(element)))
+        // }
+        // return _result.join("  |  ")
+        return "Hello"
     }
 
     navigateMobileDetails = (data?: any) => this.props.navigateMobileDetails(data)
@@ -81,7 +82,7 @@ class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
                         alt={require('../../../assets/imageAlt.gif')}
                         style={{
                             width: null,
-                            height: height,
+                            height: (height || 300),
                             overflow: "hidden",
                             borderRadius: 4
                         }}

@@ -76,15 +76,18 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
 
     render() {
         const { movieDetail, cast, loader } = this.state
-        if (loader && !movieDetail) return <Loading />
+        const { params } = this.props.route
+        const { data: mvData } = params
+        
+        if (loader) return <Loading />
 
         return (
             <SafeAreaView style={MovieDetailsStyle.droidSafeArea}>
-                <ScrollView >
+                <ScrollView>
                     <View>
                         <View style={MovieDetailsStyle.posterWrapper}>
                             <View>
-                                <PosterImage url={movieDetail?.poster_path} />
+                                <PosterImage url={mvData.poster_path} />
                             </View>
                         </View>
                         <View style={MovieDetailsStyle.movieWrapper}>
@@ -130,9 +133,6 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
                                 })
                             }
                         </View>
-
-
-
 
 
                         <View style={MovieDetailsStyle.movieInfoWrapper}>

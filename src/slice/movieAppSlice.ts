@@ -34,7 +34,7 @@ const movieAppSlice = createSlice({
         changeFilter: (state: MovieAppState, action: PayloadAction<any>) => {
             state.selectedFilter = action.payload
             if (state.selectedFilter?.id != -1) {
-                state.data = DataSet.getGenreFilterResult(action.payload.id, String(state.selectedFilter?.id)) || []
+                state.data = DataSet.getGenreFilterResult(action.payload.id) || []
             } else {
                 state.data = DataSet.getDataSet()
             }
