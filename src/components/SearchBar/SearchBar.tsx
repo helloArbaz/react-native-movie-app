@@ -7,14 +7,16 @@ import SearchBarStyle from './SearchBarStyle';
 import debounce from 'lodash/debounce';
 import { AppDispatch, RootState } from '../../store';
 import { connect } from 'react-redux';
-import { resetDataSet, searchFilter, showLoader } from '../../slice/movieAppSlice';
+import { resetDataSet, searchFilter, setSearchQuery, showLoader } from '../../slice/movieAppSlice';
 
 
 interface PropsSearchBar {
     setSearchBarVisibility: any,
     showLoader: () => {}
     searchFilter: (reqData?: any) => {}
+    setSearchQuery: (reqData?: any) => {}
     resetDataSet: () => {}
+    searchQuery?: string
     // setSearchQuery: () => {}
 }
 interface StateSearchBar {
@@ -33,8 +35,10 @@ class SearchBar extends PureComponent<PropsSearchBar, StateSearchBar> {
 
     inputChange = (query: string) => {
         this.setState({ _searchValue: query }, () => {
-            if (this.state._searchValue)
+            this.props.setSearchQuery(query)
+            if (this.state._searchValue) {
                 this.handleSearch(query);
+            }
         });
     };
 
@@ -46,17 +50,9 @@ class SearchBar extends PureComponent<PropsSearchBar, StateSearchBar> {
 
     searchBarCrossClick = () => {
         const { _searchValue } = this.state
-        const { setSearchBarVisibility } = this.props
-        if (_searchValue) {
-            this.setState({ _searchValue: '' }, () => {
-                if (this.state._searchValue == "") this.props.resetDataSet()
-            });
-            return
-        } else {
-            this.props.resetDataSet()
-            setSearchBarVisibility(null)
-        }
-
+        const { setSearchBarVisibility, setSearchQuery, searchQuery } = this.props
+        if (!searchQuery) { setSearchBarVisibility(null) }
+        setSearchQuery("")
     }
 
 
@@ -66,23 +62,19 @@ class SearchBar extends PureComponent<PropsSearchBar, StateSearchBar> {
         const { _searchValue } = this.state;
         return (
             <View style={SearchBarStyle.container}>
-                <View
-                    style={SearchBarStyle.parentContainer}
-                >
-                    <View style={SearchBarStyle.txtWrapper}>
-                        <TextInput
-                            style={{ width: "100%", height: 35,color:"white",fontWeight:"400" }}
-                            placeholderTextColor={"#8c8c8c"}
-                            placeholder="Search"
-                            value={_searchValue}
-                            onChangeText={newText => this.inputChange(newText)}
-                            autoFocus />
-                    </View>
-
-                    <TouchableOpacity style={{ width: "20%" }} onPress={() => { this.searchBarCrossClick() }}>
-                        <Text style={SearchBarStyle.cancel}>Cancel</Text>
-                    </TouchableOpacity>
+                <View style={{ width: "80%" }}>
+                    <TextInput
+                        style={SearchBarStyle.searchParent}
+                        placeholderTextColor={"#8c8c8c"}
+                        placeholder="Search"
+                        value={this.props.searchQuery}
+                        onChangeText={newText => this.inputChange(newText)}
+                        autoFocus />
                 </View>
+                <TouchableOpacity onPress={() => this.searchBarCrossClick()}>
+                    <Text style={SearchBarStyle.cancel}>Cancel</Text>
+                </TouchableOpacity>
+
             </View>
         );
     }
@@ -95,7 +87,8 @@ class SearchBar extends PureComponent<PropsSearchBar, StateSearchBar> {
 const mapStateToProps = (state: RootState) => ({
     data: state?.movieApp?.data,
     yearFilter: state.movieApp.yearFilter,
-    selectedFilter: state.movieApp.selectedFilter
+    selectedFilter: state.movieApp.selectedFilter,
+    searchQuery: state.movieApp.searchQuery,
 
 });
 
@@ -103,6 +96,7 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
     showLoader: () => dispatch(showLoader()),
     searchFilter: (reqData?: any) => dispatch(searchFilter(reqData)),
     resetDataSet: (reqData?: any) => dispatch(resetDataSet()),
+    setSearchQuery: (reqData?: any) => dispatch(setSearchQuery(reqData)),
     // loadMore: (reqData?: any) => dispatch(loadMore(reqData))
 });
 

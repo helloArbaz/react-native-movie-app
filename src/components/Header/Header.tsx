@@ -15,6 +15,7 @@ import { changeFilter, searchFilter } from '../../slice/movieAppSlice';
 
 interface PropsHeader {
     selectedFilter?: movieGenre
+    searchQuery?: string
     changeFilter: (data: movieGenre) => {}
     searchFilter: (query: string) => {}
 }
@@ -56,7 +57,7 @@ class Header extends PureComponent<PropsHeader, StateHeader> {
 
     render() {
         const { _showSearchBar } = this.state;
-        const { selectedFilter } = this.props
+        const { selectedFilter,searchQuery } = this.props
         return (
             <View style={HeaderStyle.headerWrapper}>
                 <View style={HeaderStyle.logoWrapper}>
@@ -109,6 +110,8 @@ class Header extends PureComponent<PropsHeader, StateHeader> {
 
 const mapStateToProps = (state: RootState) => ({
     selectedFilter: state?.movieApp?.selectedFilter,
+    searchQuery: state.movieApp.searchQuery,
+
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({

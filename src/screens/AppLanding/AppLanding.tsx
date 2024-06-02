@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Dimensions, FlatList, SafeAreaView, SafeAreaViewBase, ScrollView, SectionList, StatusBar, StyleSheet, Text, Touchable, TouchableOpacity, View, } from 'react-native';
+import { Dimensions, FlatList, SafeAreaView, SafeAreaViewBase, ScrollView, SectionList, StatusBar, StyleSheet, Text, Touchable, TouchableHighlight, TouchableOpacity, View, } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import { AppDispatch, RootState } from '../../store';
 import { connect } from 'react-redux';
@@ -14,7 +14,8 @@ import { MAX_YEAR } from '../../configs/api.config';
 import { FontAwesome } from "@expo/vector-icons";
 import withInternetStatus from '../../components/HOC/withInternetStatus/withInternetStatus';
 import { debounce } from 'lodash';
-import {FlashList} from "@shopify/flash-list"
+import { FlashList } from "@shopify/flash-list"
+import { setSearchQuery } from '../../slice/movieAppSlice';
 
 
 
@@ -31,7 +32,10 @@ interface PropsAppLanding {
     yearFilterMapper?: any
     dataClone?: any
     yearFilter?: any
-    selectedFilter?: any
+    selectedFilter?: any,
+    searchQuery: string,
+    setSearchQuery: (query: string) => {}
+
 }
 interface StateAppLanding {
     viewableItems?: any
@@ -166,7 +170,7 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
 
 
     render() {
-        const { data, loader } = this.props
+        const { data, loader, searchQuery } = this.props
 
 
         return (
@@ -176,6 +180,19 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
 
                 <View style={AppLandingStyle.droidSafeArea}>
                     <Header />
+
+
+                    {
+                        searchQuery && (
+                            <View style={{ padding: 10, width: "auto", flexWrap: "wrap", display: "flex", flexDirection: "row" }} >
+                                <TouchableOpacity onPress={() => this.props.setSearchQuery("")} style={{ borderWidth: 0.5, borderColor: 'white', borderRadius: 5, display: "flex", flexDirection: "row", alignItems: "center", paddingRight: 10 }}>
+                                    <Text style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 5, paddingBottom: 5, color: "white", fontSize: 15, fontWeight: "300" }}>{searchQuery}</Text>
+                                    <FontAwesome name='remove' size={15} color={'red'} />
+                                </TouchableOpacity>
+                            </View>
+                        )
+                    }
+
                     {
                         data && data.length == 0 && (
                             <View style={{ flex: 1, justifyContent: "center", alignContent: "center", alignItems: "center", gap: 10 }}>
@@ -208,13 +225,15 @@ const mapStateToProps = (state: RootState) => ({
     data: state?.movieApp?.data,
     yearFilter: state.movieApp.yearFilter,
     selectedFilter: state.movieApp.selectedFilter,
-    loader: state.movieApp.loader
-
+    loader: state.movieApp.loader,
+    searchQuery: state.movieApp.searchQuery,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
     getMoviesList: (reqData?: any) => dispatch(getMoviesList(reqData)),
-    loadMore: (reqData?: any) => dispatch(loadMore(reqData))
+    loadMore: (reqData?: any) => dispatch(loadMore(reqData)),
+    setSearchQuery: (reqData?: any) => dispatch(setSearchQuery(reqData)),
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withInternetStatus(AppLanding));

@@ -1,4 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep';
+import { movieGenre } from '../types';
 
 
 export default class DataSetClass {
@@ -26,7 +27,11 @@ export default class DataSetClass {
     createKeyPairValueForGenreIds() {
     }
 
-    getGenreFilterResult(id: any) {
+    getGenreFilterResult(id: any, query?: any) {
+
+        console.log(query, "query")
+
+        let regex = new RegExp(query, 'gi')
         if (id == -1) return this.data
         let _cloneData = cloneDeep(this.data)
         for (let i = 0; i < _cloneData.length; i++) {
@@ -35,7 +40,14 @@ export default class DataSetClass {
             for (let j = 0; j < ielement.data.length; j++) {
                 const jelement = ielement.data[j];
                 if (jelement.genre_ids.includes(parseInt(id))) {
-                    _filterResult.push(jelement)
+                    if (query) {
+                        if (regex.test(jelement.title)) {
+                            _filterResult.push(jelement)
+                        }
+                        // element.data.filter((v: any, i: number) => regex.test(v.title))
+                    } else {
+                        _filterResult.push(jelement)
+                    }
                 }
             }
             _cloneData[i]['data'].length = 0;
@@ -47,14 +59,20 @@ export default class DataSetClass {
         return _cloneData.filter((v: any, i: number) => v?.title);
     }
 
-    querySearch(query?: any) {
+    querySearch(query?: any, filter?: any) {
         let search_result: any = {}
         let returnResult: any = []
         let regex = new RegExp(query, 'gi')
         for (let i = 0; i < this.data.length; i++) {
             const element = this.data[i];
             search_result[element.title] = {};
-            let res = element.data.filter((v: any, i: number) => regex.test(v.title))
+            let res: any = []
+            if (filter && filter.id != -1) {
+                res = element.data.filter((v: any, i: number) => regex.test(v.title) && v.genre_ids.includes(parseInt(filter.id)))
+            } else {
+                res = element.data.filter((v: any, i: number) => regex.test(v.title))
+            }
+
             if (res.length > 0) {
                 search_result[element.title] = { title: element.title, data: res }
             }
@@ -64,7 +82,4 @@ export default class DataSetClass {
 
         return returnResult
     }
-
-
-
 }
