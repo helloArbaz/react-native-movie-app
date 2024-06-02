@@ -18,6 +18,7 @@ import Loading from '../../components/Loading/Loading';
 import { genreFilterById, genreNameOnly } from '../../helpers/getGenreFilter';
 import { toHoursAndMinutes } from '../../helpers/minutesToHours';
 import MovieDetailsStyle from "./MovieDetailsStyle";
+import withInternetStatus from '../../components/HOC/withInternetStatus/withInternetStatus';
 
 
 
@@ -212,22 +213,4 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
     getMovieDetailsById: (reqData: geMovieDetailsByIdRequest) => dispatch(API.getMovieDetailsById(reqData))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MovieDetails)
-
-
-
-
-
-// const mapStateToProps = (state: RootState) => ({
-//     data: state.movieApp.data,
-//     filter: state.movieApp.selectedFilter,
-//     loader: state.movieApp.loader,
-//     rawData: state.movieApp.rawData
-// });
-
-// const mapDispatchToProps = (dispatch: AppDispatch) => ({
-//     getMoviesList: (reqData?: any) => dispatch(getMoviesList(reqData)),
-//     loadMore: (reqData?: any) => dispatch(loadMore(reqData))
-// });
-
-// export default connect(mapStateToProps, mapDispatchToProps)(AppLanding);
+export default connect(mapStateToProps, mapDispatchToProps)(withInternetStatus(MovieDetails))

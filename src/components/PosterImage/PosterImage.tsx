@@ -41,7 +41,6 @@ class PosterImage extends PureComponent<PropsPosterImage, StatePosterImage> {
                 <Image 
                  style={{
                     width:Dimensions.get("screen").width-10,
-                    // width:width-40,
                     height:(height || 200),
                     overflow: "hidden",
                     borderTopLeftRadius:10,

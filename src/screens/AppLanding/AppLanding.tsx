@@ -20,6 +20,7 @@ import {FlashList} from "@shopify/flash-list"
 
 
 
+
 interface PropsAppLanding {
     navigation?: NavigationProp<any>;
     getMoviesList?: any,
