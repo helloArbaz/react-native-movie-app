@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Dimensions, FlatList, SafeAreaView, SafeAreaViewBase, ScrollView, SectionList, StatusBar, StyleSheet, Text, Touchable, TouchableOpacity, View, } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import { AppDispatch, RootState } from '../../store';
-import { API } from '../../services';
 import { connect } from 'react-redux';
 import { getMoviesList } from '../../services/getMovieList';
 import Header from '../../components/Header/Header';
@@ -11,12 +10,12 @@ import AppLandingStyle from "./AppLandingStyle"
 import MovieCard from '../../components/MovieCard/MovieCard';
 import Loading from '../../components/Loading/Loading';;
 import { loadMore } from '../../services/loadMore';
-import { FlashList, JSFPSMonitor } from '@shopify/flash-list';
-import { getNextYearFilterKey } from '../../helpers/getNextYearFilterKey';
-import DataSetClass from '../../DataSet/DataSet';
 import { MAX_YEAR } from '../../configs/api.config';
-import { Feather, Entypo, FontAwesome } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import withInternetStatus from '../../components/HOC/withInternetStatus/withInternetStatus';
+import { debounce } from 'lodash';
+import {FlashList} from "@shopify/flash-list"
+
 
 
 
@@ -33,7 +32,9 @@ interface PropsAppLanding {
     yearFilter?: any
     selectedFilter?: any
 }
-interface StateAppLanding { }
+interface StateAppLanding {
+    viewableItems?: any
+}
 
 // const DataSet = new DataSetClass()
 
@@ -47,13 +48,12 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
     constructor(props: PropsAppLanding) {
         super(props);
         this.state = {
-            loader: false
+            viewableItems: new Set([0, 1, 2, 3])
         }
         this.onEndBlockApiCallWhileScroll = true;
         this.viewabilityConfig = {
-            minimumViewTime: 0,
-            viewAreaCoveragePercentThreshold: 50,
-            waitForInteraction: false
+            // waitForInteraction: true,
+            itemVisiblePercentThreshold: 20,
         };
     }
 
@@ -69,7 +69,7 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
 
     getImages = async () => {
         await this.props.getMoviesList()
-        this.onEndReachedThreshold = 0.6
+        this.onEndReachedThreshold = 0.7
     }
 
     loadMore = async () => {
@@ -80,9 +80,12 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
     }
 
 
-    // 
-
-    _flatListrenderItem = (item: any) => <View style={{ flex: 1 }}><MovieCard navigateMobileDetails={this.navigateMobileDetails} key={`${item.item.id}-${item.index}`} movieData={item.item} /></View>
+    _flatListrenderItem = (item: any) => {
+        const isViewable = this.state.viewableItems.has(item.index);
+        return (<View style={{ flex: 1 }}>
+            <MovieCard showImage={isViewable} navigateMobileDetails={this.navigateMobileDetails} key={`${item.item.id}-${item.index}`} movieData={item.item} />
+        </View>)
+    }
     _flatListkeyExtractor = (item?: any, index?: any) => `movie-card-${JSON.stringify(item.id)}`
     _flatListgetItemLayout = (_?: any, index?: any) => { return { length: this.ITEM_HEIGHT, offset: this.ITEM_HEIGHT * index!, index } }
 
@@ -95,7 +98,12 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
         }
     }
 
-    handleViewableItemsChanged = (data: any) => { }
+    handleViewableItemsChanged = (data: any) => {
+        const viewableIndices = new Set(data.map((item: any) => item.index));
+        this.setState({ viewableItems: viewableIndices });
+    }
+
+
 
     _selectionsListrenderItem = (item: any) => {
         const { data } = this.props
@@ -105,29 +113,33 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
                     {/* <FlashList
                         numColumns={2}
                         renderItem={this._flatListrenderItem}
-                        data={this.props.data[item.index].data}
-                        removeClippedSubviews={true}
+                        data={item.section.data}
+                        removeClippedSubviews
                         onEndReachedThreshold={0.5}
                         onEndReached={() => this.onEndReached}
-                        keyExtractor={(item) => JSON.stringify(item)}
+                        // keyExtractor={(item) => JSON.stringify(item)}
                         getItemType={(item: any) => {
                             return item.type;
                         }}
+                        // onLayout={() =>this._flatListgetItemLayout}
+                        estimatedItemSize={300}
                         onMomentumScrollBegin={() => { this.onEndBlockApiCallWhileScroll = false; }}
+                        viewabilityConfig={this.viewabilityConfig}
+                        onViewableItemsChanged={({ viewableItems }) => this.handleViewableItemsChanged(viewableItems)}
                     /> */}
-
                     <FlatList
                         numColumns={2}
                         renderItem={this._flatListrenderItem}
                         data={item.section.data}
                         keyExtractor={this._flatListkeyExtractor}
-                        removeClippedSubviews={true}
+                        removeClippedSubviews
                         updateCellsBatchingPeriod={100}
-                        windowSize={3}
+                        windowSize={11}
                         getItemLayout={this._flatListgetItemLayout}
+                        extraData={item.section.data}
 
                         viewabilityConfig={this.viewabilityConfig}
-                        // onViewableItemsChanged={({ viewableItems }) => this.handleViewableItemsChanged(viewableItems)}
+                        onViewableItemsChanged={({ viewableItems }) => this.handleViewableItemsChanged(viewableItems)}
                         maxToRenderPerBatch={10}
                         initialNumToRender={8}
                         onMomentumScrollBegin={() => { this.onEndBlockApiCallWhileScroll = false; }}
@@ -156,12 +168,11 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
     render() {
         const { data, loader } = this.props
 
-        console.log(JSON.stringify(data),'"data')
 
         return (
             <SafeAreaView style={AppLandingStyle.droidSafeArea} >
 
-                {/* {loader && <Loading />} */}
+                {loader && <Loading />}
 
                 <View style={AppLandingStyle.droidSafeArea}>
                     <Header />
@@ -173,7 +184,6 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
                             </View>
                         )
                     }
-
 
                     {
                         data && data.length > 0 && <SectionList
@@ -208,7 +218,3 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withInternetStatus(AppLanding));
-
-
-
-// export default AppLanding;

@@ -15,7 +15,7 @@ interface PropsSearchBar {
     showLoader: () => {}
     searchFilter: (reqData?: any) => {}
     resetDataSet: () => {}
-    setSearchQuery: () => {}
+    // setSearchQuery: () => {}
 }
 interface StateSearchBar {
     _searchValue: string

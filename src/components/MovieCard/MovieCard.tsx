@@ -1,29 +1,27 @@
 import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Image, Dimensions, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Dimensions, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import MovieCardStyle from "./MovieCardStyle"
 
-import { Feather, Entypo } from "@expo/vector-icons";
-import Loading from '../Loading/Loading';
+import { Entypo } from "@expo/vector-icons";
 import { movieGenre, movieListData } from '../../types';
-import { API_URL, MOVIE_URL_DOMAIN } from '../../configs/api.config';
+import { MOVIE_URL_DOMAIN } from '../../configs/api.config';
 import { genreFilterById, genreNameOnly } from '../../helpers/getGenreFilter';
-import InViewPortTracker from '../InViewPort/InViewPort';
-import InViewPort from '../InViewPort/InViewPort';
-import FastImage from 'react-native-fast-image';
-// import { ImageBackground } from 'expo-image';
-import { Image as ExpoImage } from 'expo-image';
+import { Image as ExpoImage } from "expo-image"
 
 
 
 interface PropsMovieCard {
     movieData: movieListData
-    navigateMobileDetails: any
+    navigateMobileDetails: any,
+    showImage: boolean,
+
 }
+
 interface StateMovieCard {
     width: any;
     height: any;
-    renderImage: boolean
+
 }
 
 class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
@@ -32,7 +30,6 @@ class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
         this.state = {
             height: '',
             width: '',
-            renderImage: false
         }
     }
 
@@ -43,7 +40,7 @@ class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
     loadImageProps = () => {
         const { movieData } = this.props
         Image.getSize(String(`${MOVIE_URL_DOMAIN}${movieData.poster_path}`), (srcWidth, srcHeight) => {
-            const maxHeight = Dimensions.get('window').height; // or something else
+            const maxHeight = Dimensions.get('window').height;
             const maxWidth = Dimensions.get('window').width;
 
             const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
@@ -61,7 +58,6 @@ class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
             _result.push(genreNameOnly(String(element)))
         }
         return _result.join("  |  ")
-        // return "Hello"
     }
 
     navigateMobileDetails = (data?: any) => this.props.navigateMobileDetails(data)
@@ -74,19 +70,27 @@ class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
         return (
             <TouchableOpacity activeOpacity={0.5} onPress={() => this.navigateMobileDetails(movieData)}>
                 <View style={MovieCardStyle.wrapper}>
-                    <Image
-                        resizeMode="cover"
-                        source={{ uri: `${MOVIE_URL_DOMAIN}${movieData.poster_path}` }}
-                        // src={imageLoaderAlt}
-                        // source={require('../../../assets/imageAlt.gif')}
-                        alt={require('../../../assets/imageAlt.gif')}
-                        style={{
-                            width: null,
-                            height: (height || 300),
-                            overflow: "hidden",
-                            borderRadius: 4
-                        }}
-                    />
+                    {
+                        this.props.showImage ? (
+                            <Image
+                                resizeMode="cover"
+                                source={{ uri: `${MOVIE_URL_DOMAIN}${movieData.poster_path}` }}
+                                blurRadius={this.props.showImage ? 0 : 6}
+                                style={{
+                                    width: null,
+                                    height: (height),
+                                    overflow: "hidden",
+                                    borderRadius: 4
+                                }}
+                            />
+                        ) : (
+                            <View style={{ display: "flex", justifyContent: 'center', alignItems: 'center', height: 295 }}>
+                                <ActivityIndicator size={20} color={"#F0283C"} />
+                            </View>
+                        )
+                    }
+
+
                     <View style={MovieCardStyle.rating}>
                         <View style={{ display: 'flex', flexDirection: "row" }}>
                             <Entypo

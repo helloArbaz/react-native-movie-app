@@ -40,8 +40,11 @@ export default class DataSetClass {
             }
             _cloneData[i]['data'].length = 0;
             _cloneData[i]['data'].push(..._filterResult)
+            if (_cloneData[i]['data'] && _cloneData[i]['data'].length == 0) {
+                _cloneData[i] = null
+            }
         }
-        return _cloneData;
+        return _cloneData.filter((v: any, i: number) => v?.title);
     }
 
     querySearch(query?: any) {

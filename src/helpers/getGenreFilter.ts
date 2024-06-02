@@ -5,8 +5,8 @@ export const GET_FILTER_MAPPER: movieGenre[] = [
     { id: "28", name: "Action" },
     { id: "35", name: "Comedy" },
     { id: "27", name: "Horror" },
-    { id: "18", name: "Drama" },
-    { id: "878", name: "Science Fiction" },
+    { id: "878", name: "Sci-Fi" },
+    { id: "18", name: "Drama" }
 ]
 
 const genreFilterIdMapper: any = {
@@ -41,20 +41,4 @@ export const genreNameOnly = (id: string) => {
     if (genreFilterIdMapper[id]) {
         return genreFilterIdMapper[id].name
     }
-}
-
-
-export const MAX_YEAR = 2024
-export const MIN_YEAR = 2013
-
-
-const getYearList = () => {
-    let _mapper: any = {}
-    for (let index = MIN_YEAR; index < MAX_YEAR; index++) {
-        _mapper[index] = true
-    }
-}
-
-export const getYearFilter = {
-
 }
