@@ -1,6 +1,6 @@
 import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Keyboard, TextInput, View } from 'react-native';
+import { Button, Keyboard, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import { Feather, Entypo } from "@expo/vector-icons";
 import SearchBarStyle from './SearchBarStyle';
@@ -46,8 +46,6 @@ class SearchBar extends PureComponent<PropsSearchBar, StateSearchBar> {
 
     searchBarCrossClick = () => {
         const { _searchValue } = this.state
-        const { searchFilter } = this.props
-
         const { setSearchBarVisibility } = this.props
         if (_searchValue) {
             this.setState({ _searchValue: '' }, () => {
@@ -69,24 +67,21 @@ class SearchBar extends PureComponent<PropsSearchBar, StateSearchBar> {
         return (
             <View style={SearchBarStyle.container}>
                 <View
-                    style={[SearchBarStyle.searchBar__unclicked, SearchBarStyle.searchBar__clicked]}
+                    style={SearchBarStyle.parentContainer}
                 >
-                    <Feather
-                        name="search"
-                        size={20}
-                        color="#FFFFFF"
-                        style={{ marginLeft: 15, marginRight: 10 }}
-                    />
-                    <TextInput
-                        style={SearchBarStyle.input}
-                        placeholderTextColor={"#8c8c8c"}
-                        placeholder="Search"
-                        value={_searchValue}
-                        onChangeText={newText => this.inputChange(newText)}
-                        autoFocus
-                    />
+                    <View style={SearchBarStyle.txtWrapper}>
+                        <TextInput
+                            style={{ width: "100%", height: 35,color:"white",fontWeight:"400" }}
+                            placeholderTextColor={"#8c8c8c"}
+                            placeholder="Search"
+                            value={_searchValue}
+                            onChangeText={newText => this.inputChange(newText)}
+                            autoFocus />
+                    </View>
 
-                    <Entypo name="cross" size={25} color="#FFFFFF" style={{ padding: 1, marginRight: 15 }} onPress={() => { this.searchBarCrossClick() }} />
+                    <TouchableOpacity style={{ width: "20%" }} onPress={() => { this.searchBarCrossClick() }}>
+                        <Text style={SearchBarStyle.cancel}>Cancel</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         );
