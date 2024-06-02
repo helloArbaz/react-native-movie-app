@@ -108,7 +108,6 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
     showLoader: () => dispatch(showLoader()),
     searchFilter: (reqData?: any) => dispatch(searchFilter(reqData)),
     resetDataSet: (reqData?: any) => dispatch(resetDataSet()),
-    setSearchQuery: (reqData?: any) => dispatch(setSearchQuery()),
     // loadMore: (reqData?: any) => dispatch(loadMore(reqData))
 });
 

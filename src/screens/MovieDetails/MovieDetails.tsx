@@ -78,7 +78,7 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
         const { movieDetail, cast, loader } = this.state
         const { params } = this.props.route
         const { data: mvData } = params
-        
+
         if (loader) return <Loading />
 
         return (
@@ -122,17 +122,18 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
                                     </View>
                                 </View>
                             </View>
+                            <View style={[MovieDetailsStyle.moviGenreWrapper,{marginTop:20}]}>
+                                {
+                                    movieDetail?.genres?.map((v: movieGenre, index: any) => {
+                                        return <Text key={`genre-${index}`} style={MovieDetailsStyle.genreList}>{v?.name}</Text>
+                                    })
+                                }
+                            </View>
                         </View>
                     </View>
 
                     <View style={{ padding: 15, gap: 40, }}>
-                        <View style={MovieDetailsStyle.moviGenreWrapper}>
-                            {
-                                movieDetail?.genres?.map((v: movieGenre, index: any) => {
-                                    return <Text key={`genre-${index}`} style={MovieDetailsStyle.genreList}>{v?.name}</Text>
-                                })
-                            }
-                        </View>
+
 
 
                         <View style={MovieDetailsStyle.movieInfoWrapper}>

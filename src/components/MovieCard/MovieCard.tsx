@@ -52,16 +52,16 @@ class MovieCard extends PureComponent<PropsMovieCard, StateMovieCard> {
     }
 
     getGenreList = () => {
-        // const { movieData } = this.props
-        // if (movieData.genre_ids) { }
-        // let _result = [];
-        // for (let index = 0; index < movieData?.genre_ids.length; index++) {
-        //     let element: movieGenre = movieData?.genre_ids[index]
-        //     genreFilterById(String(element))
-        //     _result.push(genreNameOnly(String(element)))
-        // }
-        // return _result.join("  |  ")
-        return "Hello"
+        const { movieData } = this.props
+        if (movieData.genre_ids) { }
+        let _result = [];
+        for (let index = 0; index < movieData?.genre_ids.length; index++) {
+            let element: movieGenre = movieData?.genre_ids[index]
+            genreFilterById(String(element))
+            _result.push(genreNameOnly(String(element)))
+        }
+        return _result.join("  |  ")
+        // return "Hello"
     }
 
     navigateMobileDetails = (data?: any) => this.props.navigateMobileDetails(data)

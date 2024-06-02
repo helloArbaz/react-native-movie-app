@@ -46,8 +46,8 @@ class PosterImage extends PureComponent<PropsPosterImage, StatePosterImage> {
                     overflow: "hidden",
                     borderTopLeftRadius:10,
                     borderTopRightRadius:10,
-                    borderBottomLeftRadius:50,
-                    borderBottomRightRadius:50,
+                    borderBottomLeftRadius:30,
+                    borderBottomRightRadius:30,
                     borderWidth:0.4,
                     borderColor:'#999999'
                 }}

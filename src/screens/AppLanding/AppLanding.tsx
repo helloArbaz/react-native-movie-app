@@ -16,6 +16,7 @@ import { getNextYearFilterKey } from '../../helpers/getNextYearFilterKey';
 import DataSetClass from '../../DataSet/DataSet';
 import { MAX_YEAR } from '../../configs/api.config';
 import { Feather, Entypo, FontAwesome } from "@expo/vector-icons";
+import withInternetStatus from '../../components/HOC/withInternetStatus/withInternetStatus';
 
 
 
@@ -160,7 +161,7 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
         return (
             <SafeAreaView style={AppLandingStyle.droidSafeArea} >
 
-                {loader && <Loading />}
+                {/* {loader && <Loading />} */}
 
                 <View style={AppLandingStyle.droidSafeArea}>
                     <Header />
@@ -206,7 +207,7 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
     loadMore: (reqData?: any) => dispatch(loadMore(reqData))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppLanding);
+export default connect(mapStateToProps, mapDispatchToProps)(withInternetStatus(AppLanding));
 
 
 

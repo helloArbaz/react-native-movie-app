@@ -17,7 +17,8 @@ export default StyleSheet.create({
         paddingRight: 25,
         paddingLeft: 25,
         bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.732)'
+        backgroundColor: 'rgba(0, 0, 0, 0.732)',
+        // height:100
     },
     movieWrapperParent: {
         width: "70%", display: "flex", flexDirection: "column",
