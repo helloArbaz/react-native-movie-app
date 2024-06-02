@@ -63,7 +63,6 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
     }
 
     navigateMobileDetails = async (data?: any) => {
-        let response = await this.props.getMoviesList()
         this.props.navigation?.navigate("movie-details", { data })
     }
 
