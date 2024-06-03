@@ -57,7 +57,7 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
         }
         this.onEndBlockApiCallWhileScroll = true;
         this.viewabilityConfig = {
-            itemVisiblePercentThreshold: 20,
+            itemVisiblePercentThreshold: 5,
         };
     }
 
