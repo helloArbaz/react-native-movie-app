@@ -11,7 +11,6 @@ export default class DataSetClass {
 
 
     updateDataSet(result: any, yearFilter?: any) {
-        // setTimeout(() => this.createKeyPairValueForGenreIds(result), 200)
         this.que_keyMapper.push(result)
         let _clonet = [...this.data];
         _clonet.push({ title: yearFilter, data: [...result] });
@@ -41,7 +40,6 @@ export default class DataSetClass {
                         if (regex.test(jelement.title)) {
                             _filterResult.push(jelement)
                         }
-                        // element.data.filter((v: any, i: number) => regex.test(v.title))
                     } else {
                         _filterResult.push(jelement)
                     }

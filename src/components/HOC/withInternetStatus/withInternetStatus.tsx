@@ -13,7 +13,7 @@ interface InternetStatusProps {
 }
 
 
-// took this typescript reference from online
+// took this typescript import reference from online
 const withInternetStatus = <P extends object>(WrappedComponent: ComponentType<P>) => {
   return class HOC extends Component<InternetStatusProps, InternetStatusState> {
     checkInternetStatus: any

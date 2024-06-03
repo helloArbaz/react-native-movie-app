@@ -10,18 +10,18 @@ export type listOfYear = {
 
 
 export type movieListData = {
-    adult?: Boolean; //
-    backdrop_path?: string; //
+    adult?: Boolean; 
+    backdrop_path?: string; 
     genre_ids: []
     id: string;
-    original_language?: string //
+    original_language?: string 
     original_title?: string;
     overview?: string
-    popularity?: string //
+    popularity?: string 
     poster_path?: string | undefined;
-    release_date?: string; //
+    release_date?: string; 
     title?: string;
-    video?: string //
+    video?: string
     vote_average?: string
     vote_count?: string
 }
@@ -92,10 +92,6 @@ export type Cast = {
     id: number,
     cast?: cast[]
 }
-
-
-// https://api.themoviedb.org/3/movie/385687/credits?api_key=2dca580c2a14b55200e784d157207b4d
-// https://api.themoviedb.org/3/movie/64635/credits?api_key=2dca580c2a14b55200e784d157207b4d
 
 export type geMovieDetailsByIdRequest = {
     id: string,

@@ -1,8 +1,5 @@
 import { API_KEY, API_URL } from "../configs/api.config";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { sortDateData } from "../helpers/filterResponseData";
-import { Alert } from "react-native";
-// import { getMoviesListReqParams } from "../typescript/Types";
 
 
 export const getMoviesList = createAsyncThunk("api/fetchMovies", async (req: any) => {

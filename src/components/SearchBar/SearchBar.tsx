@@ -17,7 +17,6 @@ interface PropsSearchBar {
     setSearchQuery: (reqData?: any) => {}
     resetDataSet: () => {}
     searchQuery?: string
-    // setSearchQuery: () => {}
 }
 interface StateSearchBar {
     _searchValue: string
@@ -52,6 +51,7 @@ class SearchBar extends PureComponent<PropsSearchBar, StateSearchBar> {
         const { _searchValue } = this.state
         const { setSearchBarVisibility, setSearchQuery, searchQuery } = this.props
         if (!searchQuery) { 
+            this.handleSearch("")
             setSearchBarVisibility(null)
          }
         setSearchQuery("")
@@ -83,10 +83,6 @@ class SearchBar extends PureComponent<PropsSearchBar, StateSearchBar> {
     }
 }
 
-// export default SearchBar;
-
-
-
 const mapStateToProps = (state: RootState) => ({
     data: state?.movieApp?.data,
     yearFilter: state.movieApp.yearFilter,
@@ -100,7 +96,6 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
     searchFilter: (reqData?: any) => dispatch(searchFilter(reqData)),
     resetDataSet: (reqData?: any) => dispatch(resetDataSet()),
     setSearchQuery: (reqData?: any) => dispatch(setSearchQuery(reqData)),
-    // loadMore: (reqData?: any) => dispatch(loadMore(reqData))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchBar);

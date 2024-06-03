@@ -2,7 +2,6 @@ import { StyleSheet, Platform, Dimensions } from 'react-native';
 export default StyleSheet.create({
     wrapper: {
         width: Dimensions.get("screen").width/2-12,
-        // height: 325, //222+8 
         backgroundColor: 'black',
         margin: 6,
         borderRadius: 4,
@@ -13,7 +12,6 @@ export default StyleSheet.create({
         top: 10,
         right: 10,
         backgroundColor: 'rgba(17, 17, 17, 0.766)',
-        // backgroundColor:"black",
         justifyContent: "center",
         display: "flex",
         alignItems: 'center',
@@ -35,15 +33,9 @@ export default StyleSheet.create({
         backgroundColor: 'rgba(17, 17, 17, 0.684)',
         justifyContent: "flex-start",
         display: "flex",
-        // alignItems: 'center',
-        // height: '15%',
         width: "100%",
         textAlign: "left",
-        // paddingLeft: 5,
-        // paddingRight: 5,
         flexDirection: "column",
-        // borderTopRightRadius:5,
-        // borderTopLeftRadius:5
         padding: 5,
         alignItems:"center"
     },
@@ -68,7 +60,6 @@ export default StyleSheet.create({
     yearText: {
         fontSize: 10,
         color: "white",
-        // fontWeight: "800",
         marginTop: 5
     },
     ratingStart: {

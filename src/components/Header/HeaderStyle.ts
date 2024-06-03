@@ -15,7 +15,6 @@ export default StyleSheet.create({
         paddingLeft:10,
         paddingRight:10,
         backgroundColor:'#242424',
-        // borderRadius:10
     },
     genreFilter:{
         paddingTop:6,

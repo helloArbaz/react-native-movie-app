@@ -42,7 +42,6 @@ interface StateAppLanding {
     viewableItems?: any
 }
 
-// const DataSet = new DataSetClass()
 
 class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
     ITEM_HEIGHT = 300
@@ -58,7 +57,6 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
         }
         this.onEndBlockApiCallWhileScroll = true;
         this.viewabilityConfig = {
-            // waitForInteraction: true,
             itemVisiblePercentThreshold: 20,
         };
     }

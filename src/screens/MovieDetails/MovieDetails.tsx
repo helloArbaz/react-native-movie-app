@@ -9,11 +9,8 @@ import Cast from '../../components/Cast/Cast';
 import { formatViewCountNumber } from '../../helpers/formatViewCountNumber';
 import { cast, geMovieDetailsByIdRequest, getMoiveCastByIdRequest, movieDetailsKeys, movieGenre, movieListData, production_companies, spoken_languages } from '../../types';
 import { AppDispatch, RootState } from '../../store';
-// import { getMovieDetailsById } from '../../services/getMOvieDetailsById';
 import { API } from '../../services';
-import { getMoiveCastById } from '../../services/getMoiveCastById';
 import { connect } from 'react-redux';
-import { getMovieDetailsById } from '../../services/getMovieDetailsById';
 import Loading from '../../components/Loading/Loading';
 import { genreFilterById, genreNameOnly } from '../../helpers/getGenreFilter';
 import { toHoursAndMinutes } from '../../helpers/minutesToHours';
@@ -199,10 +196,6 @@ class MovieDetails extends Component<PropsMovieDetails, StateMovieDetails> {
         );
     }
 }
-
-
-// export default MovieDetails;
-
 
 const mapStateToProps = (state: RootState) => ({
     data: state?.movieApp?.data,

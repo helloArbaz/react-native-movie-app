@@ -119,7 +119,5 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
     searchFilter: (query: string) => dispatch(searchFilter(query))
 });
 
-// export default Header;
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);
