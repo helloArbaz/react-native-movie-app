@@ -15,7 +15,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import withInternetStatus from '../../components/HOC/withInternetStatus/withInternetStatus';
 import { debounce } from 'lodash';
 import { FlashList } from "@shopify/flash-list"
-import { setSearchQuery } from '../../slice/movieAppSlice';
+import { searchFilter, setSearchQuery } from '../../slice/movieAppSlice';
 
 
 
@@ -35,6 +35,7 @@ interface PropsAppLanding {
     selectedFilter?: any,
     searchQuery: string,
     setSearchQuery: (query: string) => {}
+    searchFilter: (reqData?: any) => {}
 
 }
 interface StateAppLanding {
@@ -96,7 +97,7 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
 
     onEndReached = (event: any) => {
         const { selectedFilter } = this.props
-        if (!this.onEndBlockApiCallWhileScroll && selectedFilter.id == -1) {
+        if (!this.onEndBlockApiCallWhileScroll && selectedFilter.id == -1 && !this.props.searchQuery) {
             this.loadMore()
             this.onEndBlockApiCallWhileScroll = true;
         }
@@ -185,7 +186,7 @@ class AppLanding extends Component<PropsAppLanding, StateAppLanding> {
                     {
                         searchQuery && (
                             <View style={{ padding: 10, width: "auto", flexWrap: "wrap", display: "flex", flexDirection: "row" }} >
-                                <TouchableOpacity onPress={() => this.props.setSearchQuery("")} style={{ borderWidth: 0.5, borderColor: 'white', borderRadius: 5, display: "flex", flexDirection: "row", alignItems: "center", paddingRight: 10 }}>
+                                <TouchableOpacity onPress={() => { this.props.setSearchQuery(""); this.props.searchFilter("") }} style={{ borderWidth: 0.5, borderColor: 'white', borderRadius: 5, display: "flex", flexDirection: "row", alignItems: "center", paddingRight: 10 }}>
                                     <Text style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 5, paddingBottom: 5, color: "white", fontSize: 15, fontWeight: "300" }}>{searchQuery}</Text>
                                     <FontAwesome name='remove' size={15} color={'red'} />
                                 </TouchableOpacity>
@@ -233,6 +234,7 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
     getMoviesList: (reqData?: any) => dispatch(getMoviesList(reqData)),
     loadMore: (reqData?: any) => dispatch(loadMore(reqData)),
     setSearchQuery: (reqData?: any) => dispatch(setSearchQuery(reqData)),
+    searchFilter: (reqData?: any) => dispatch(searchFilter(reqData)),
 
 });
 

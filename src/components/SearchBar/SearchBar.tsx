@@ -51,8 +51,11 @@ class SearchBar extends PureComponent<PropsSearchBar, StateSearchBar> {
     searchBarCrossClick = () => {
         const { _searchValue } = this.state
         const { setSearchBarVisibility, setSearchQuery, searchQuery } = this.props
-        if (!searchQuery) { setSearchBarVisibility(null) }
+        if (!searchQuery) { 
+            setSearchBarVisibility(null)
+         }
         setSearchQuery("")
+        this.handleSearch("")
     }
 
 

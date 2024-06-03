@@ -34,10 +34,12 @@ const movieAppSlice = createSlice({
             if (state.selectedFilter?.id != -1) {
                 let result = DataSet.getGenreFilterResult(action.payload.id, state.searchQuery);
                 state.data = DataSet.getGenreFilterResult(action.payload.id, state.searchQuery) ? DataSet.getGenreFilterResult(action.payload.id, state.searchQuery) : []
-                console.log(JSON.stringify(result), "state.data:state.data")
+            } else if (state.searchQuery) {
+                state.data = DataSet.querySearch(state.searchQuery) || []
             } else {
-                state.data = DataSet.getDataSet()
+                state.data = DataSet.getDataSet() || []
             }
+            state;
         },
         searchFilter: (state: MovieAppState, action: PayloadAction<any>) => {
             state.searchQuery = action.payload
@@ -53,20 +55,6 @@ const movieAppSlice = createSlice({
         },
         setSearchQuery: (state: MovieAppState, action: PayloadAction<any>) => {
             state.searchQuery = action.payload
-            console.log("action.payload", action.payload, state.selectedFilter,)
-            console.log(state.selectedFilter?.id != -1 && state.searchQuery,"state.selectedFilter?.id")
-            if (!action.payload) {
-                if (state.selectedFilter?.id != -1) state.data = DataSet.getGenreFilterResult(state.selectedFilter?.id) ? DataSet.getGenreFilterResult(state.selectedFilter?.id) : []
-                else {
-                    if (state.searchQuery) state.data = DataSet.querySearch(state.searchQuery) || []
-                    else state.data = DataSet.getDataSet() || []
-                }
-            } else {
-                if (state.selectedFilter?.id != -1 && state.searchQuery) {
-                    state.data = DataSet.querySearch(state.searchQuery) || []
-                }
-            }
-            state
         }
     },
     extraReducers: (builder: ActionReducerMapBuilder<any>): void => {

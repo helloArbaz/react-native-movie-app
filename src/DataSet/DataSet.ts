@@ -28,9 +28,6 @@ export default class DataSetClass {
     }
 
     getGenreFilterResult(id: any, query?: any) {
-
-        console.log(query, "query")
-
         let regex = new RegExp(query, 'gi')
         if (id == -1) return this.data
         let _cloneData = cloneDeep(this.data)
